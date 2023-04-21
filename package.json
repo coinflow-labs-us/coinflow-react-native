@@ -1,0 +1,41 @@
+{
+  "name": "@coinflowlabs/react-native",
+  "version": "0.2.3",
+  "description": "React Native Component for Coinflow Withdraw",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/coinflow-labs-us/coinflow-react-native"
+  },
+  "keywords": [
+    "react-native",
+    "react",
+    "typescript",
+    "solana",
+    "web3"
+  ],
+  "files": [
+    "build/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "clean": "rimraf build",
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "react": ">=16",
+    "react-native": ">=0.66.0",
+    "react-native-webview": ">=11.16.0"
+  },
+  "dependencies": {
+    "bs58": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.37",
+    "@types/react-native": "^0.71.6",
+    "eslint-config-react-app": "^7.0.1",
+    "typescript": "^5.0.4"
+  }
+}

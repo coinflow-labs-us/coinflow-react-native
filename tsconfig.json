@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "build",
+    "target": "es6",
+    "module": "es6",
+    "declaration": true,
+    "strict": true,
+    "jsx": "react",
+    "skipLibCheck": true,
+    "composite": true,
+    "paths": {
+      "@coinflowlabs/react": ["../react/index.ts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": [
+    "build"
+  ],
+  "references": [
+    { "path": "../react" }
+  ]
+}
