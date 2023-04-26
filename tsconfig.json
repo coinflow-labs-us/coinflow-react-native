@@ -1,24 +1,27 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "build",
-    "target": "es6",
-    "module": "es6",
-    "declaration": true,
-    "strict": true,
-    "jsx": "react",
-    "skipLibCheck": true,
-    "composite": true,
-    "paths": {
-      "@coinflowlabs/react": ["../react/index.ts"]
-    }
-  },
   "include": ["src"],
   "exclude": [
-    "build"
+    "build",
+    "node_modules"
   ],
-  "references": [
-    { "path": "../react" }
-  ]
+  "compilerOptions": {
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
+    "importHelpers": true,
+    "declaration": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./build",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "composite": true
+  }
 }

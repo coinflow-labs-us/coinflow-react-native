@@ -1,7 +1,4 @@
-import {Transaction} from '@solana/web3.js';
-import base58 from 'bs58';
-
-export type CoinflowEnvs = 'prod' | 'staging' | 'sandbox' | 'local';
+import {CoinflowEnvs} from './CoinflowTypes';
 
 export class ReactNativeCoinflowUtils {
   env: CoinflowEnvs;
@@ -29,24 +26,21 @@ export class ReactNativeCoinflowUtils {
     transaction,
   }: {
     route: string;
-    publicKey: string;
+    publicKey: string | null | undefined;
     env?: CoinflowEnvs;
     amount?: number;
-    transaction?: Transaction;
+    transaction?: string;
   }): string {
+    if (!publicKey) return '';
+
     const url = new URL(
       route,
       ReactNativeCoinflowUtils.getCoinflowBaseUrl(env)
     );
     url.searchParams.append('pubkey', publicKey);
+
     if (transaction) {
-      const serializedTx = base58.encode(
-        transaction.serialize({
-          requireAllSignatures: false,
-          verifySignatures: false,
-        })
-      );
-      url.searchParams.append('transaction', serializedTx);
+      url.searchParams.append('transaction', transaction);
     }
     if (amount) {
       url.searchParams.append('amount', amount.toString());

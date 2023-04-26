@@ -1,36 +1,30 @@
-import React from 'react';
-import {CoinflowWebView, WithStyles} from './CoinflowWebView';
-import {CoinflowEnvs} from './ReactNativeCoinflowUtils';
-import {Connection} from '@solana/web3.js';
-import {WebView} from 'react-native-webview';
+import React, {useMemo} from 'react';
+import {CoinflowWebView} from './CoinflowWebView';
+import {CoinflowHistoryProps, WithStyles} from './CoinflowTypes';
 
-export type CoinflowHistoryProps = {
-  wallet: any;
-  merchantId: string;
-  connection: Connection;
-  env?: CoinflowEnvs;
-  WebViewRef: React.RefObject<WebView>;
-  handleIframeMessages: ({data}: {data: string}) => Promise<void>;
-};
+export function CoinflowWithdrawHistory(
+  props: CoinflowHistoryProps & WithStyles
+) {
+  const WebViewRef = React.useRef<any | null>(null); // TODO dont use any
 
-export function CoinflowWithdrawHistory({
-  wallet,
-  merchantId,
-  env,
-  style,
-  WebViewRef,
-  handleIframeMessages,
-}: CoinflowHistoryProps & WithStyles) {
-  if (!wallet.publicKey || !wallet.connected) return null;
+  const publicKey = useMemo(() => {
+    switch (props.blockchain) {
+      case 'solana':
+        return props.wallet.publicKey?.toString();
+      case 'near':
+        return props.wallet.accountId;
+      case 'polygon':
+        return props.wallet.address;
+    }
+  }, []);
 
   return (
     <CoinflowWebView
-      publicKey={wallet.publicKey.toString()}
+      publicKey={publicKey}
       WebViewRef={WebViewRef}
-      handleIframeMessages={handleIframeMessages}
-      style={style}
-      route={`/history/withdraw/${merchantId}`}
-      env={env}
+      handleIframeMessages={() => Promise.resolve()}
+      route={`/history/withdraw/${props.merchantId}`}
+      {...props}
     />
   );
 }

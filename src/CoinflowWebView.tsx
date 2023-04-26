@@ -1,50 +1,17 @@
 import React, {useMemo} from 'react';
 import WebView from 'react-native-webview';
-import {Linking, StyleProp, ViewStyle} from 'react-native';
-import {
-  CoinflowEnvs,
-  ReactNativeCoinflowUtils,
-} from './ReactNativeCoinflowUtils';
-import {Transaction} from '@solana/web3.js';
+import {Linking} from 'react-native';
+import {ReactNativeCoinflowUtils} from './ReactNativeCoinflowUtils';
+import {CoinflowWebViewProps, WithStyles} from './CoinflowTypes';
 
-type CoinflowIFrameProps = {
-  publicKey: string;
-  IFrameRef: React.RefObject<HTMLIFrameElement>;
-  env?: CoinflowEnvs;
-  route: string;
-  amount?: number;
-  transaction?: Transaction;
-  onLoad?: () => void;
-};
-
-export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
-  handleIframeMessages: ({data}: {data: string}) => Promise<void>;
-  WebViewRef: React.RefObject<WebView>;
-};
-
-export type WithStyles = {style?: StyleProp<ViewStyle>};
-
-export function CoinflowWebView({
-  publicKey,
-  env,
-  route,
-  transaction,
-  amount,
-  handleIframeMessages,
-  WebViewRef,
-  style,
-  onLoad,
-}: CoinflowWebViewProps & WithStyles) {
+export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
   const url = useMemo(() => {
-    return ReactNativeCoinflowUtils.getCoinflowUrl({
-      amount,
-      env,
-      publicKey,
-      route,
-      transaction,
-    });
-  }, [amount, env, publicKey, route, transaction]);
+    return ReactNativeCoinflowUtils.getCoinflowUrl(props);
+  }, [props]);
 
+  if (!props.publicKey) return null;
+
+  const {handleIframeMessages, WebViewRef, style, onLoad} = props;
   return useMemo(
     () => (
       <WebView
@@ -57,6 +24,7 @@ export function CoinflowWebView({
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {
+          // TODO handle other explorers
           if (request.url.includes('solscan')) {
             Linking.openURL(request.url).catch();
             return false;
