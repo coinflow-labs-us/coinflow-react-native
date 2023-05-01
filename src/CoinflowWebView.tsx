@@ -9,11 +9,11 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
     return ReactNativeCoinflowUtils.getCoinflowUrl(props);
   }, [props]);
 
-  if (!props.publicKey) return null;
-
   const {handleIframeMessages, WebViewRef, style, onLoad} = props;
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    if (!props.publicKey) return null;
+
+    return (
       <WebView
         style={[
           {
@@ -38,7 +38,6 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
         }
         onLoad={onLoad}
       />
-    ),
-    [url]
-  );
+    );
+  }, [url]);
 }

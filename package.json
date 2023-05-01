@@ -1,6 +1,6 @@
 {
   "name": "@coinflowlabs/react-native",
-  "version": "1.0.0-SNAPSHOT.2",
+  "version": "1.0.0",
   "description": "React Native Component for Coinflow",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -36,6 +36,7 @@
     }
   },
   "dependencies": {
+    "react-native-get-random-values": "^1.8.0",
     "bs58": "^5.0.0",
     "bn.js": "^5.2.1"
   },

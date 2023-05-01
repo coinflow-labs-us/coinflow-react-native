@@ -1,3 +1,5 @@
+import 'react-native-get-random-values';
+
 export * from './CoinflowWithdraw';
 export * from './CoinflowPurchase';
 export * from './CoinflowPurchaseHistory';
