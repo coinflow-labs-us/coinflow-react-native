@@ -24,8 +24,11 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {
-          // TODO handle other explorers
-          if (request.url.includes('solscan')) {
+          // TODO ignore only coinflow urls all others open in browser
+          if (
+            request.url.includes('solscan') ||
+            request.url.includes('persona')
+          ) {
             Linking.openURL(request.url).catch();
             return false;
           }
