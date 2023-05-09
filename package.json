@@ -41,7 +41,7 @@
     "bn.js": "^5.2.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
+    "@types/react": "^18.2.6",
     "@types/react-native": "^0.71.6",
     "eslint-config-react-app": "^7.0.1",
     "typescript": "^5.0.4",
