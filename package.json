@@ -36,13 +36,13 @@
     }
   },
   "dependencies": {
-    "react-native-get-random-values": "^1.8.0",
+    "react-native-get-random-values": "^1.9.0",
     "bs58": "^5.0.0",
     "bn.js": "^5.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.6",
-    "@types/react-native": "^0.71.6",
+    "@types/react-native": "^0.72.0",
     "eslint-config-react-app": "^7.0.1",
     "typescript": "^5.0.4",
     "@solana/wallet-adapter-react": "^0.15.32"
