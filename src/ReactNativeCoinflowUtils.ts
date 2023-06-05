@@ -24,12 +24,14 @@ export class ReactNativeCoinflowUtils {
     amount,
     publicKey,
     transaction,
+    bankAccountLinkRedirect,
   }: {
     route: string;
     publicKey: string | null | undefined;
     env?: CoinflowEnvs;
     amount?: number;
     transaction?: string;
+    bankAccountLinkRedirect?: string;
   }): string {
     if (!publicKey) return '';
 
@@ -44,6 +46,12 @@ export class ReactNativeCoinflowUtils {
     }
     if (amount) {
       url.searchParams.append('amount', amount.toString());
+    }
+    if (bankAccountLinkRedirect) {
+      url.searchParams.append(
+        'bankAccountLinkRedirect',
+        bankAccountLinkRedirect
+      );
     }
     return url.toString();
   }

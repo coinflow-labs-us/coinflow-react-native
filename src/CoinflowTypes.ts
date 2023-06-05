@@ -27,6 +27,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   handleIframeMessages: ({data}: {data: string}) => Promise<void>;
   WebViewRef: React.RefObject<WebView>;
   onLoad?: () => void;
+  bankAccountLinkRedirect?: string;
 };
 
 export type WithStyles = {style?: StyleProp<ViewStyle>};
@@ -197,6 +198,7 @@ export interface CoinflowCommonWithdrawProps extends CoinflowTypes {
   token?: string;
   amount?: number;
   email?: string;
+  bankAccountLinkRedirect?: string;
 }
 
 export interface CoinflowSolanaWithdrawProps
