@@ -116,6 +116,10 @@ export interface CoinflowIFrameProps {
   env?: CoinflowEnvs;
   loaderBackground?: string;
   supportsVersionedTransactions?: boolean;
+  additionalWallets?: {
+    wallet: string;
+    blockchain: 'solana' | 'eth' | 'near' | 'polygon';
+  }[];
 }
 
 /** Transactions **/
@@ -199,6 +203,10 @@ export interface CoinflowCommonWithdrawProps extends CoinflowTypes {
   amount?: number;
   email?: string;
   bankAccountLinkRedirect?: string;
+  additionalWallets?: {
+    wallet: string;
+    blockchain: 'solana' | 'eth' | 'near' | 'polygon';
+  }[];
 }
 
 export interface CoinflowSolanaWithdrawProps

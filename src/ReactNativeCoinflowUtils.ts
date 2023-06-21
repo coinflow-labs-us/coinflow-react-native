@@ -25,6 +25,7 @@ export class ReactNativeCoinflowUtils {
     publicKey,
     transaction,
     bankAccountLinkRedirect,
+    additionalWallets,
   }: {
     route: string;
     publicKey: string | null | undefined;
@@ -32,6 +33,10 @@ export class ReactNativeCoinflowUtils {
     amount?: number;
     transaction?: string;
     bankAccountLinkRedirect?: string;
+    additionalWallets?: {
+      wallet: string;
+      blockchain: 'solana' | 'eth' | 'near' | 'polygon';
+    }[];
   }): string {
     if (!publicKey) return '';
 
@@ -53,6 +58,12 @@ export class ReactNativeCoinflowUtils {
         bankAccountLinkRedirect
       );
     }
+    if (additionalWallets)
+      url.searchParams.append(
+        'additionalWallets',
+        JSON.stringify(additionalWallets)
+      );
+
     return url.toString();
   }
 }

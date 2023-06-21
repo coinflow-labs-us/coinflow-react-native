@@ -24,6 +24,9 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {
+          if (request.url === url || request.url.startsWith('about:blank')) {
+            return true;
+          }
           Linking.openURL(request.url).catch();
           return false;
         }}
