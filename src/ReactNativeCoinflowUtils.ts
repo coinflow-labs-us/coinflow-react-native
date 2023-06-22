@@ -1,4 +1,4 @@
-import {CoinflowEnvs} from './CoinflowTypes';
+import {CoinflowBlockchain, CoinflowEnvs} from './CoinflowTypes';
 
 export class ReactNativeCoinflowUtils {
   env: CoinflowEnvs;
@@ -19,6 +19,7 @@ export class ReactNativeCoinflowUtils {
   }
 
   static getCoinflowUrl({
+    blockchain,
     route,
     env,
     amount,
@@ -27,6 +28,7 @@ export class ReactNativeCoinflowUtils {
     bankAccountLinkRedirect,
     additionalWallets,
   }: {
+    blockchain: CoinflowBlockchain;
     route: string;
     publicKey: string | null | undefined;
     env?: CoinflowEnvs;
@@ -41,7 +43,7 @@ export class ReactNativeCoinflowUtils {
     if (!publicKey) return '';
 
     const url = new URL(
-      route,
+      `/${blockchain}` + route,
       ReactNativeCoinflowUtils.getCoinflowBaseUrl(env)
     );
     url.searchParams.append('pubkey', publicKey);

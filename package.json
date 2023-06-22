@@ -1,6 +1,6 @@
 {
   "name": "@coinflowlabs/react-native",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "React Native Component for Coinflow",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -27,18 +27,13 @@
   "peerDependencies": {
     "react": ">=16",
     "react-native": ">=0.66.0",
-    "react-native-webview": ">=11.16.0",
-    "@solana/web3.js": ">=1.22.0"
-  },
-  "peerDependenciesMeta": {
-    "@solana/web3.js": {
-      "optional": true
-    }
+    "react-native-webview": ">=11.16.0"
   },
   "dependencies": {
     "react-native-get-random-values": "^1.9.0",
     "bs58": "^5.0.0",
-    "bn.js": "^5.2.1"
+    "bn.js": "^5.2.1",
+    "@solana/web3.js": "^1.75.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.8",
