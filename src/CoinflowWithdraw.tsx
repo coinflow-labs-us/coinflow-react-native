@@ -1,6 +1,7 @@
 import {CoinflowWebView} from './CoinflowWebView';
 import React from 'react';
 import {
+  CoinflowEthWithdrawProps,
   CoinflowNearWithdrawProps,
   CoinflowPolygonWithdrawProps,
   CoinflowSolanaWithdrawProps,
@@ -15,9 +16,11 @@ import {useNearIFrameMessageHandlers} from './wallet/NearIFrameMessageHandlers';
 export function CoinflowWithdraw(props: CoinflowWithdrawProps & WithStyles) {
   switch (props.blockchain) {
     case 'solana':
-      return <SolanaPurchase {...props} />;
+      return <SolanaContent {...props} />;
     case 'polygon':
-      return <PolygonPurchase {...props} />;
+      return <EvmContent {...props} />;
+    case 'eth':
+      return <EvmContent {...props} />;
     case 'near':
       return <NearPurchase {...props} />;
     default:
@@ -25,7 +28,7 @@ export function CoinflowWithdraw(props: CoinflowWithdrawProps & WithStyles) {
   }
 }
 
-function SolanaPurchase(props: CoinflowSolanaWithdrawProps & WithStyles) {
+function SolanaContent(props: CoinflowSolanaWithdrawProps & WithStyles) {
   const handlers = useSolanaIFrameMessageHandlers(props);
   const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
 
@@ -40,7 +43,9 @@ function SolanaPurchase(props: CoinflowSolanaWithdrawProps & WithStyles) {
   );
 }
 
-function PolygonPurchase(props: CoinflowPolygonWithdrawProps & WithStyles) {
+function EvmContent(
+  props: (CoinflowPolygonWithdrawProps | CoinflowEthWithdrawProps) & WithStyles
+) {
   const handlers = useEthIFrameMessageHandlers(props);
   const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
 
