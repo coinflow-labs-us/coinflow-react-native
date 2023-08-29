@@ -24,7 +24,12 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {
-          if (request.url === url || request.url.startsWith('about:blank')) {
+          const blacklist = ['sdk.nsureapi.com'];
+          const shouldNotRedirect =
+            request.url === url ||
+            request.url.startsWith('about:blank') ||
+            blacklist.some(item => request.url.includes(item));
+          if (shouldNotRedirect) {
             return true;
           }
           Linking.openURL(request.url).catch();
