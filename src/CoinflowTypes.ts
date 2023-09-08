@@ -186,6 +186,7 @@ export interface CoinflowNearPurchaseProps extends CoinflowCommonPurchaseProps {
 export interface CoinflowPolygonPurchaseProps
   extends CoinflowCommonPurchaseProps {
   transaction?: EvmTransaction;
+  token?: string;
   wallet: EthWallet;
   blockchain: 'polygon';
 }

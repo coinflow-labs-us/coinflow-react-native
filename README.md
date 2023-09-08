@@ -41,9 +41,15 @@ Props:
 
 `CoinflowUtils`
 
+# 1.2.3
+
 * `getFeePayer` - Return the `PublicKey` of the Coinflow Fee Payer
 
 # Changelog
+
+### 1.2.4
+
+- Added `token` prop for `CoinflowPurchase` with polygon
 
 ### 1.2.3
 

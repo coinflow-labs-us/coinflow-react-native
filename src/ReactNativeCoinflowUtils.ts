@@ -1,4 +1,5 @@
 import {CoinflowBlockchain, CoinflowEnvs} from './CoinflowTypes';
+import {PublicKey} from '@solana/web3.js';
 
 export class ReactNativeCoinflowUtils {
   env: CoinflowEnvs;
@@ -27,8 +28,10 @@ export class ReactNativeCoinflowUtils {
     transaction,
     bankAccountLinkRedirect,
     additionalWallets,
+    token,
   }: {
     blockchain: CoinflowBlockchain;
+    token?: string | PublicKey;
     route: string;
     publicKey: string | null | undefined;
     env?: CoinflowEnvs;
@@ -65,6 +68,8 @@ export class ReactNativeCoinflowUtils {
         'additionalWallets',
         JSON.stringify(additionalWallets)
       );
+
+    if (token) url.searchParams.append('token', token.toString());
 
     return url.toString();
   }
