@@ -41,6 +41,10 @@ Props:
 
 `CoinflowUtils`
 
+# 1.2.5
+
+* Fixing Webhook Info
+
 # 1.2.3
 
 * `getFeePayer` - Return the `PublicKey` of the Coinflow Fee Payer

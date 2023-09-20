@@ -29,6 +29,7 @@ export class ReactNativeCoinflowUtils {
     bankAccountLinkRedirect,
     additionalWallets,
     token,
+    webhookInfo,
   }: {
     blockchain: CoinflowBlockchain;
     token?: string | PublicKey;
@@ -42,6 +43,7 @@ export class ReactNativeCoinflowUtils {
       wallet: string;
       blockchain: 'solana' | 'eth' | 'near' | 'polygon';
     }[];
+    webhookInfo?: object;
   }): string {
     if (!publicKey) return '';
 
@@ -70,6 +72,12 @@ export class ReactNativeCoinflowUtils {
       );
 
     if (token) url.searchParams.append('token', token.toString());
+
+    if (webhookInfo)
+      url.searchParams.append(
+        'webhookInfo',
+        Buffer.from(JSON.stringify(webhookInfo)).toString('base64')
+      );
 
     return url.toString();
   }
