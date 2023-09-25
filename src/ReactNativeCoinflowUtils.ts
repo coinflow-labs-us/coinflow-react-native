@@ -1,4 +1,8 @@
-import {CoinflowBlockchain, CoinflowEnvs} from './CoinflowTypes';
+import {
+  ChargebackProtectionData,
+  CoinflowBlockchain,
+  CoinflowEnvs,
+} from './CoinflowTypes';
 import {PublicKey} from '@solana/web3.js';
 
 export class ReactNativeCoinflowUtils {
@@ -30,6 +34,8 @@ export class ReactNativeCoinflowUtils {
     additionalWallets,
     token,
     webhookInfo,
+    deviceId,
+    chargebackProtectionData,
   }: {
     blockchain: CoinflowBlockchain;
     token?: string | PublicKey;
@@ -44,6 +50,8 @@ export class ReactNativeCoinflowUtils {
       blockchain: 'solana' | 'eth' | 'near' | 'polygon';
     }[];
     webhookInfo?: object;
+    deviceId?: string;
+    chargebackProtectionData?: ChargebackProtectionData;
   }): string {
     if (!publicKey) return '';
 
@@ -77,6 +85,13 @@ export class ReactNativeCoinflowUtils {
       url.searchParams.append(
         'webhookInfo',
         Buffer.from(JSON.stringify(webhookInfo)).toString('base64')
+      );
+
+    if (deviceId) url.searchParams.append('deviceId', deviceId);
+    if (chargebackProtectionData)
+      url.searchParams.append(
+        'chargebackProtectionData',
+        JSON.stringify(chargebackProtectionData)
       );
 
     return url.toString();

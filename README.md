@@ -41,6 +41,10 @@ Props:
 
 `CoinflowUtils`
 
+# 1.2.6
+
+* Added deviceId and chargebackProtectionData to CoinflowPurchase
+
 # 1.2.5
 
 * Fixing Webhook Info

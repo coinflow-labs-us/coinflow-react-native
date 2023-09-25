@@ -10,6 +10,50 @@ import {StyleProp, ViewStyle} from 'react-native';
 export type CoinflowBlockchain = 'solana' | 'near' | 'eth' | 'polygon';
 export type CoinflowEnvs = 'prod' | 'staging' | 'sandbox' | 'local';
 
+export type ChargebackProtectionData = ChargebackProtectionItem[];
+
+export interface ChargebackProtectionItem {
+  /**
+   * The name of the product
+   */
+  productName: string;
+  /**
+   * The product type. Possible values include: inGameProduct, gameOfSkill, dataStorage, computingResources, sportsTicket, eSportsTicket, musicTicket, conferenceTicket, virtualSportsTicket, virtualESportsTicket, virtualMusicTicket, virtualConferenceTicket, alcohol, DLC, subscription, fundACause, realEstate, computingContract, digitalArt, topUp
+   */
+  productType:
+    | 'inGameProduct'
+    | 'gameOfSkill'
+    | 'dataStorage'
+    | 'computingResources'
+    | 'sportsTicket'
+    | 'eSportsTicket'
+    | 'musicTicket'
+    | 'conferenceTicket'
+    | 'virtualSportsTicket'
+    | 'virtualESportsTicket'
+    | 'virtualMusicTicket'
+    | 'virtualConferenceTicket'
+    | 'alcohol'
+    | 'DLC'
+    | 'subscription'
+    | 'fundACause'
+    | 'realEstate'
+    | 'computingContract'
+    | 'digitalArt'
+    | 'topUp';
+  /**
+   * The item's list price
+   */
+  /**
+   * The number of units sold
+   */
+  quantity: number;
+  /**
+   * Any additional data that the store can provide on the product, e.g. description, link to image, etc.
+   */
+  rawProductData?: {[key: string]: any};
+}
+
 export interface CoinflowTypes {
   merchantId: string;
   env?: CoinflowEnvs;
@@ -114,6 +158,8 @@ export interface CoinflowIFrameProps {
   token?: string | PublicKey;
   email?: string;
   env?: CoinflowEnvs;
+  deviceId?: string;
+  chargebackProtectionData?: ChargebackProtectionData;
   loaderBackground?: string;
   supportsVersionedTransactions?: boolean;
   additionalWallets?: {
@@ -163,6 +209,8 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   onSuccess?: OnSuccessMethod;
   webhookInfo?: object;
   email?: string;
+  deviceId?: string;
+  chargebackProtectionData?: ChargebackProtectionData;
 }
 
 export interface CoinflowSolanaPurchaseProps
