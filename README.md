@@ -41,6 +41,10 @@ Props:
 
 `CoinflowUtils`
 
+# 1.2.7
+
+* Fix external linking for specified URLs
+
 # 1.2.6
 
 * Added deviceId and chargebackProtectionData to CoinflowPurchase

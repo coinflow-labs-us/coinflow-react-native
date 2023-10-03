@@ -24,14 +24,21 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {
-          const blacklist = ['sdk.nsureapi.com'];
-          const shouldNotRedirect =
-            request.url === url ||
-            request.url.startsWith('about:blank') ||
-            blacklist.some(item => request.url.includes(item));
-          if (shouldNotRedirect) {
-            return true;
-          }
+          const whitelist = [
+            'solscan',
+            'etherscan',
+            'persona',
+            'polyscan',
+            'near.org',
+            'plaid',
+            'coinflow.cash',
+          ];
+          const shouldRedirect =
+            (request.url.includes('https') || request.url.includes('http')) &&
+            whitelist.some(item => request.url.includes(item));
+
+          if (!shouldRedirect) return true;
+
           Linking.openURL(request.url).catch();
           return false;
         }}
