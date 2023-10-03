@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.22",
-    "@types/react-native": "^0.72.2",
+    "@types/react-native": "^0.72.3",
     "eslint-config-react-app": "^7.0.1",
     "typescript": "^5.2.2",
     "@solana/wallet-adapter-react": "^0.15.32"
