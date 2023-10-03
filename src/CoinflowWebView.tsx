@@ -37,7 +37,9 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
             (request.url.includes('https') || request.url.includes('http')) &&
             whitelist.some(item => request.url.includes(item));
 
-          if (!shouldRedirect) return true;
+          const isCurrentUrl = request.url.split('?')[0] === url.split('?')[0];
+
+          if (!shouldRedirect || isCurrentUrl) return true;
 
           Linking.openURL(request.url).catch();
           return false;

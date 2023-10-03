@@ -41,6 +41,10 @@ Props:
 
 `CoinflowUtils`
 
+# 1.2.8
+
+* Fix external linking for Coinflow URLs
+
 # 1.2.7
 
 * Fix external linking for specified URLs
