@@ -1,9 +1,4 @@
-import {
-  ChargebackProtectionData,
-  CoinflowBlockchain,
-  CoinflowEnvs,
-} from './CoinflowTypes';
-import {PublicKey} from '@solana/web3.js';
+import {CoinflowEnvs, CoinflowWebViewProps} from './CoinflowTypes';
 
 export class ReactNativeCoinflowUtils {
   env: CoinflowEnvs;
@@ -36,23 +31,8 @@ export class ReactNativeCoinflowUtils {
     webhookInfo,
     deviceId,
     chargebackProtectionData,
-  }: {
-    blockchain: CoinflowBlockchain;
-    token?: string | PublicKey;
-    route: string;
-    publicKey: string | null | undefined;
-    env?: CoinflowEnvs;
-    amount?: number;
-    transaction?: string;
-    bankAccountLinkRedirect?: string;
-    additionalWallets?: {
-      wallet: string;
-      blockchain: 'solana' | 'eth' | 'near' | 'polygon';
-    }[];
-    webhookInfo?: object;
-    deviceId?: string;
-    chargebackProtectionData?: ChargebackProtectionData;
-  }): string {
+    rent,
+  }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
     const url = new URL(
@@ -93,6 +73,8 @@ export class ReactNativeCoinflowUtils {
         'chargebackProtectionData',
         JSON.stringify(chargebackProtectionData)
       );
+
+    if (rent) url.searchParams.append('rent', rent.lamports.toString());
 
     return url.toString();
   }

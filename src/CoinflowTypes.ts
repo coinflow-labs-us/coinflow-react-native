@@ -166,6 +166,7 @@ export interface CoinflowIFrameProps {
     wallet: string;
     blockchain: 'solana' | 'eth' | 'near' | 'polygon';
   }[];
+  rent?: {lamports: string | number};
 }
 
 /** Transactions **/
@@ -223,6 +224,7 @@ export interface CoinflowSolanaPurchaseProps
   blockchain: 'solana';
   token?: PublicKey | string;
   supportsVersionedTransactions?: boolean;
+  rent?: {lamports: string | number};
 }
 
 export interface CoinflowNearPurchaseProps extends CoinflowCommonPurchaseProps {

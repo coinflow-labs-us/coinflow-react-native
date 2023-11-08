@@ -41,6 +41,11 @@ Props:
 
 `CoinflowUtils`
 
+
+### 1.3.0
+
+- Added support for paying solana rent for a transaction
+
 # 1.2.8
 
 * Fix external linking for Coinflow URLs
