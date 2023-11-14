@@ -32,6 +32,7 @@ export class ReactNativeCoinflowUtils {
     deviceId,
     chargebackProtectionData,
     rent,
+    lockDefaultToken,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -75,6 +76,7 @@ export class ReactNativeCoinflowUtils {
       );
 
     if (rent) url.searchParams.append('rent', rent.lamports.toString());
+    if (lockDefaultToken) url.searchParams.append('lockDefaultToken', 'true');
 
     return url.toString();
   }

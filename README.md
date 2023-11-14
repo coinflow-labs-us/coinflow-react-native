@@ -41,6 +41,9 @@ Props:
 
 `CoinflowUtils`
 
+### 1.3.1
+
+- Added new property lockDefaultToken which locks the withdrawal option to the users default currency (USDC or EUROe)
 
 ### 1.3.0
 
