@@ -73,6 +73,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   onLoad?: () => void;
   bankAccountLinkRedirect?: string;
   lockDefaultToken?: boolean;
+  supportsVersionedTransactions?: boolean;
 };
 
 export type WithStyles = {style?: StyleProp<ViewStyle>};
@@ -260,6 +261,7 @@ export interface CoinflowCommonWithdrawProps extends CoinflowTypes {
     wallet: string;
     blockchain: 'solana' | 'eth' | 'near' | 'polygon';
   }[];
+  supportsVersionedTransactions?: boolean;
 }
 
 export interface CoinflowSolanaWithdrawProps

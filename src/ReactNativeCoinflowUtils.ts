@@ -33,6 +33,7 @@ export class ReactNativeCoinflowUtils {
     chargebackProtectionData,
     rent,
     lockDefaultToken,
+    supportsVersionedTransactions,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -61,6 +62,10 @@ export class ReactNativeCoinflowUtils {
       );
 
     if (token) url.searchParams.append('token', token.toString());
+
+    if (supportsVersionedTransactions) {
+      url.searchParams.append('supportsVersionedTransactions', 'true');
+    }
 
     if (webhookInfo)
       url.searchParams.append(

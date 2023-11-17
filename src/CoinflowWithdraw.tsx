@@ -32,12 +32,18 @@ function SolanaContent(props: CoinflowSolanaWithdrawProps & WithStyles) {
   const handlers = useSolanaIFrameMessageHandlers(props);
   const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
 
+  const webviewProps = {
+    ...props,
+    supportsVersionedTransactions:
+      props.supportsVersionedTransactions !== false,
+  };
+
   return (
     <CoinflowWebView
       publicKey={props.wallet.publicKey?.toString()}
       WebViewRef={WebViewRef}
       route={`/withdraw/${props.merchantId}`}
-      {...props}
+      {...webviewProps}
       handleIframeMessages={handleIframeMessages}
     />
   );
