@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {CoinflowWebView} from './CoinflowWebView';
 import {
+  CoinflowEthPurchaseProps,
   CoinflowNearPurchaseProps,
   CoinflowPolygonPurchaseProps,
   CoinflowPurchaseProps,
@@ -18,7 +19,9 @@ export function CoinflowPurchase(props: CoinflowPurchaseProps & WithStyles) {
     case 'solana':
       return <SolanaPurchase {...props} />;
     case 'polygon':
-      return <PolygonPurchase {...props} />;
+      return <EvmPurchase {...props} />;
+    case 'eth':
+      return <EvmPurchase {...props} />;
     case 'near':
       return <NearPurchase {...props} />;
     default:
@@ -52,7 +55,9 @@ function SolanaPurchase(props: CoinflowSolanaPurchaseProps & WithStyles) {
   );
 }
 
-function PolygonPurchase(props: CoinflowPolygonPurchaseProps & WithStyles) {
+function EvmPurchase(
+  props: (CoinflowPolygonPurchaseProps | CoinflowEthPurchaseProps) & WithStyles
+) {
   const handlers = useEthIFrameMessageHandlers(props);
   const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
 
