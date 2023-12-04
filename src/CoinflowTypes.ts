@@ -71,6 +71,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   handleIframeMessages: ({data}: {data: string}) => Promise<void>;
   WebViewRef: React.RefObject<WebView>;
   onLoad?: () => void;
+  tokens?: string[];
   bankAccountLinkRedirect?: string;
   lockDefaultToken?: boolean;
   supportsVersionedTransactions?: boolean;
@@ -157,7 +158,6 @@ export interface CoinflowIFrameProps {
   transaction?: string;
   blockchain: CoinflowBlockchain;
   webhookInfo?: object;
-  token?: string | PublicKey;
   email?: string;
   env?: CoinflowEnvs;
   deviceId?: string;
@@ -237,7 +237,7 @@ export type CoinflowPurchaseProps =
 
 export interface CoinflowCommonWithdrawProps extends CoinflowTypes {
   onSuccess?: OnSuccessMethod;
-  token?: string;
+  tokens?: string[];
   lockDefaultToken?: boolean;
   amount?: number;
   email?: string;

@@ -27,7 +27,7 @@ export class ReactNativeCoinflowUtils {
     transaction,
     bankAccountLinkRedirect,
     additionalWallets,
-    token,
+    tokens,
     webhookInfo,
     deviceId,
     chargebackProtectionData,
@@ -61,7 +61,7 @@ export class ReactNativeCoinflowUtils {
         JSON.stringify(additionalWallets)
       );
 
-    if (token) url.searchParams.append('token', token.toString());
+    if (tokens) url.searchParams.append('tokens', tokens.toString());
 
     if (supportsVersionedTransactions) {
       url.searchParams.append('supportsVersionedTransactions', 'true');
