@@ -33,9 +33,13 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
             'plaid',
             'coinflow.cash',
           ];
+
+          const blacklist = ['pay.google.com'];
+
           const shouldRedirect =
             (request.url.includes('https') || request.url.includes('http')) &&
-            whitelist.some(item => request.url.includes(item));
+            whitelist.some(item => request.url.includes(item)) &&
+            !blacklist.some(item => request.url.includes(item));
 
           const isCurrentUrl = request.url.split('?')[0] === url.split('?')[0];
 

@@ -37,6 +37,10 @@ Props:
 * `partialSigners` (optional): Keypairs of Partial Signers to sign the transaction with, this is necessary when initializing new accounts as the new account Keypair must sign the transaction.
 * `debugTx` (optional): Setting this to `true` will sign the transaction with the wallet, and send the transaction with no preflight checks allowing for easier debug of any issues.
 
+## 2.1.2
+
+- Bug fix for enhanced usage with Google Pay
+
 ## 2.1.0
 
 - Added support for EVM NFT purchases
