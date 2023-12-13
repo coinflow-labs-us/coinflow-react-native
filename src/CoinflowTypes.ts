@@ -71,6 +71,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   handleIframeMessages: ({data}: {data: string}) => Promise<void>;
   WebViewRef: React.RefObject<WebView>;
   onLoad?: () => void;
+  token?: string | PublicKey;
   tokens?: string[];
   bankAccountLinkRedirect?: string;
   lockDefaultToken?: boolean;
