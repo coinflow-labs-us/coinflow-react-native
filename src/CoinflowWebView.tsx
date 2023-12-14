@@ -21,6 +21,7 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
           },
           style,
         ]}
+        enableApplePay
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {
