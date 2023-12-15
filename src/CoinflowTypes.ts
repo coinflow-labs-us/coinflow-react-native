@@ -170,6 +170,8 @@ export interface CoinflowIFrameProps {
     blockchain: 'solana' | 'eth' | 'near' | 'polygon';
   }[];
   rent?: {lamports: string | number};
+  disableApplePay?: boolean;
+  disableGooglePay?: boolean;
 }
 
 /** Transactions **/
@@ -193,6 +195,8 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   email?: string;
   deviceId?: string;
   chargebackProtectionData?: ChargebackProtectionData;
+  disableApplePay: boolean;
+  disableGooglePay: boolean;
 }
 
 export interface CoinflowSolanaPurchaseProps

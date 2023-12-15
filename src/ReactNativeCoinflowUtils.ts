@@ -35,6 +35,8 @@ export class ReactNativeCoinflowUtils {
     rent,
     lockDefaultToken,
     supportsVersionedTransactions,
+    disableApplePay,
+    disableGooglePay,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -84,6 +86,9 @@ export class ReactNativeCoinflowUtils {
 
     if (rent) url.searchParams.append('rent', rent.lamports.toString());
     if (lockDefaultToken) url.searchParams.append('lockDefaultToken', 'true');
+
+    if (disableApplePay) url.searchParams.append('disableApplePay', 'true');
+    if (disableGooglePay) url.searchParams.append('disableGooglePay', 'true');
 
     return url.toString();
   }
