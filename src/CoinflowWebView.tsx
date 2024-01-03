@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import WebView from 'react-native-webview';
-import {Linking} from 'react-native';
+import {Linking, Platform} from 'react-native';
 import {ReactNativeCoinflowUtils} from './ReactNativeCoinflowUtils';
 import {CoinflowWebViewProps, WithStyles} from './CoinflowTypes';
 
@@ -13,6 +13,9 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
   return useMemo(() => {
     if (!props.publicKey) return null;
 
+    const enableApplePay =
+      props.route.includes('/purchase/') && Platform.OS === 'ios';
+
     return (
       <WebView
         style={[
@@ -21,6 +24,7 @@ export function CoinflowWebView(props: CoinflowWebViewProps & WithStyles) {
           },
           style,
         ]}
+        enableApplePay={enableApplePay}
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}
         onShouldStartLoadWithRequest={request => {

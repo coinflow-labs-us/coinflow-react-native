@@ -5,6 +5,7 @@ import {Wallet} from '@near-wallet-selector/core';
 import React from 'react';
 import WebView from 'react-native-webview';
 import {StyleProp, ViewStyle} from 'react-native';
+import {CustomerInfo} from '@coinflow/common';
 
 /** Coinflow Types **/
 export type CoinflowBlockchain = 'solana' | 'near' | 'eth' | 'polygon';
@@ -159,6 +160,7 @@ export interface CoinflowIFrameProps {
   transaction?: string;
   blockchain: CoinflowBlockchain;
   webhookInfo?: object;
+  customerInfo?: CustomerInfo;
   email?: string;
   env?: CoinflowEnvs;
   deviceId?: string;
@@ -192,6 +194,7 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   amount?: number;
   onSuccess?: OnSuccessMethod;
   webhookInfo?: object;
+  customerInfo?: CustomerInfo;
   email?: string;
   deviceId?: string;
   chargebackProtectionData?: ChargebackProtectionData;

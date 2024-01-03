@@ -14,7 +14,7 @@ export function useWebViewWallet(
     onSuccess?: OnSuccessMethod;
   }
 ) {
-  const WebViewRef = React.useRef<any | null>(null); // TODO dont use any
+  const WebViewRef = React.useRef<any | null>(null);
 
   const sendIFrameMessage = useCallback(
     (message: string) => {

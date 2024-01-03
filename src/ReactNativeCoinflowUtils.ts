@@ -37,6 +37,7 @@ export class ReactNativeCoinflowUtils {
     supportsVersionedTransactions,
     disableApplePay,
     disableGooglePay,
+    customerInfo,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -75,6 +76,12 @@ export class ReactNativeCoinflowUtils {
       url.searchParams.append(
         'webhookInfo',
         Buffer.from(JSON.stringify(webhookInfo)).toString('base64')
+      );
+
+    if (customerInfo)
+      url.searchParams.append(
+        'customerInfo',
+        Buffer.from(JSON.stringify(customerInfo)).toString('base64')
       );
 
     if (deviceId) url.searchParams.append('deviceId', deviceId);
