@@ -198,8 +198,8 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   email?: string;
   deviceId?: string;
   chargebackProtectionData?: ChargebackProtectionData;
-  disableApplePay: boolean;
-  disableGooglePay: boolean;
+  disableApplePay?: boolean;
+  disableGooglePay?: boolean;
 }
 
 export interface CoinflowSolanaPurchaseProps
