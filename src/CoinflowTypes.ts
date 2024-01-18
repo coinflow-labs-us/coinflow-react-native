@@ -5,7 +5,7 @@ import {Wallet} from '@near-wallet-selector/core';
 import React from 'react';
 import WebView from 'react-native-webview';
 import {StyleProp, ViewStyle} from 'react-native';
-import {CustomerInfo} from '@coinflow/common';
+import {CustomerInfo, SettlementType} from '@coinflow/common';
 
 /** Coinflow Types **/
 export type CoinflowBlockchain = 'solana' | 'near' | 'eth' | 'polygon';
@@ -77,6 +77,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   bankAccountLinkRedirect?: string;
   lockDefaultToken?: boolean;
   supportsVersionedTransactions?: boolean;
+  lockAmount?: boolean;
 };
 
 export type WithStyles = {style?: StyleProp<ViewStyle>};
@@ -174,6 +175,8 @@ export interface CoinflowIFrameProps {
   rent?: {lamports: string | number};
   disableApplePay?: boolean;
   disableGooglePay?: boolean;
+  planCode?: string;
+  settlementType?: SettlementType;
 }
 
 /** Transactions **/
@@ -255,6 +258,7 @@ export interface CoinflowCommonWithdrawProps extends CoinflowTypes {
     blockchain: 'solana' | 'eth' | 'near' | 'polygon';
   }[];
   supportsVersionedTransactions?: boolean;
+  lockAmount?: boolean;
 }
 
 export interface CoinflowSolanaWithdrawProps

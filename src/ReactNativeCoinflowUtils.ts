@@ -38,6 +38,9 @@ export class ReactNativeCoinflowUtils {
     disableApplePay,
     disableGooglePay,
     customerInfo,
+    planCode,
+    settlementType,
+    lockAmount,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -96,6 +99,10 @@ export class ReactNativeCoinflowUtils {
 
     if (disableApplePay) url.searchParams.append('disableApplePay', 'true');
     if (disableGooglePay) url.searchParams.append('disableGooglePay', 'true');
+    if (planCode) url.searchParams.append('planCode', planCode);
+    if (settlementType)
+      url.searchParams.append('settlementType', settlementType);
+    if (lockAmount) url.searchParams.append('lockAmount', 'true');
 
     return url.toString();
   }
