@@ -203,6 +203,7 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   chargebackProtectionData?: ChargebackProtectionData;
   disableApplePay?: boolean;
   disableGooglePay?: boolean;
+  settlementType?: SettlementType;
 }
 
 export interface CoinflowSolanaPurchaseProps
