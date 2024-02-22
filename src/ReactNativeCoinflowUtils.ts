@@ -41,6 +41,7 @@ export class ReactNativeCoinflowUtils {
     planCode,
     settlementType,
     lockAmount,
+    nativeSolToConvert,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -95,6 +96,11 @@ export class ReactNativeCoinflowUtils {
       );
 
     if (rent) url.searchParams.append('rent', rent.lamports.toString());
+    if (nativeSolToConvert)
+      url.searchParams.append(
+        'nativeSolToConvert',
+        nativeSolToConvert.lamports.toString()
+      );
     if (lockDefaultToken) url.searchParams.append('lockDefaultToken', 'true');
 
     if (disableApplePay) url.searchParams.append('disableApplePay', 'true');
