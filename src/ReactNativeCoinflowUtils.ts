@@ -42,6 +42,7 @@ export class ReactNativeCoinflowUtils {
     settlementType,
     lockAmount,
     nativeSolToConvert,
+    theme,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -80,6 +81,12 @@ export class ReactNativeCoinflowUtils {
       url.searchParams.append(
         'webhookInfo',
         Buffer.from(JSON.stringify(webhookInfo)).toString('base64')
+      );
+
+    if (theme)
+      url.searchParams.append(
+        'theme',
+        Buffer.from(JSON.stringify(theme)).toString('base64')
       );
 
     if (customerInfo)

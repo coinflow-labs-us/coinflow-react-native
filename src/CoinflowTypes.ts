@@ -5,7 +5,44 @@ import {Wallet} from '@near-wallet-selector/core';
 import React from 'react';
 import WebView from 'react-native-webview';
 import {StyleProp, ViewStyle} from 'react-native';
-import {CustomerInfo, SettlementType} from '@coinflow/common';
+
+enum SettlementType {
+  Credits = 'Credits',
+  USDC = 'USDC',
+  Bank = 'Bank',
+}
+
+enum MerchantStyle {
+  Rounded = 'rounded',
+  Sharp = 'sharp',
+  Pill = 'pill',
+}
+
+type MerchantTheme = {
+  primary?: string;
+  background?: string;
+  backgroundAccent?: string;
+  backgroundAccent2?: string;
+  textColor?: string;
+  textColorAccent?: string;
+  textColorAction?: string;
+  font?: string;
+  style?: MerchantStyle;
+};
+
+interface CustomerInfo {
+  name?: string;
+  verificationId?: string;
+  displayName?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  ip?: string;
+  lat?: string;
+  lng?: string;
+}
 
 /** Coinflow Types **/
 export type CoinflowBlockchain = 'solana' | 'near' | 'eth' | 'polygon';
@@ -61,6 +98,7 @@ export interface CoinflowTypes {
   loaderBackground?: string;
   blockchain: CoinflowBlockchain;
   onLoad?: () => void;
+  theme?: MerchantTheme;
 }
 
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -78,6 +116,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   lockDefaultToken?: boolean;
   supportsVersionedTransactions?: boolean;
   lockAmount?: boolean;
+  theme?: MerchantTheme;
 };
 
 export type WithStyles = {style?: StyleProp<ViewStyle>};
@@ -313,9 +352,11 @@ export interface ReturnedTokenIdRedeem extends NormalRedeem {
 }
 
 type ReservoirNftIdItem = Omit<KnownTokenIdRedeem, keyof NormalRedeem>;
+
 interface ReservoirOrderIdItem {
   orderId: string;
 }
+
 type ReservoirItem = ReservoirNftIdItem | ReservoirOrderIdItem;
 type ReservoirItems = ReservoirItem | ReservoirItem[];
 
