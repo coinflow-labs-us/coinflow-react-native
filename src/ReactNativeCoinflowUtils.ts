@@ -64,6 +64,7 @@ export class ReactNativeCoinflowUtils {
         bankAccountLinkRedirect
       );
     }
+
     if (additionalWallets)
       url.searchParams.append(
         'additionalWallets',
