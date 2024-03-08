@@ -58,6 +58,10 @@ Props:
 * `rent` (optional, Solana only): Specify the blockchain rent amount to add to the total
 * `nativeSolToConvert` (optional, Solana only): Specify the amount of native SOL to convert wSOL for the purchase
 
+## 2.1.13
+
+- Added new ChargebackProtectionData productTypes
+
 ## 2.1.12
 
 - Added `waitForHash` to EvmTransactionData
