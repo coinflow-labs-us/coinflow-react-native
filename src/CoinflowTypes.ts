@@ -126,7 +126,11 @@ export type WithStyles = {style?: StyleProp<ViewStyle>};
 export type SolanaWallet = PartialBy<
   Pick<
     WalletContextState,
-    'wallet' | 'signTransaction' | 'publicKey' | 'sendTransaction'
+    | 'wallet'
+    | 'signTransaction'
+    | 'publicKey'
+    | 'sendTransaction'
+    | 'signMessage'
   >,
   'wallet' | 'signTransaction'
 >;
@@ -194,30 +198,38 @@ export type CoinflowHistoryProps =
   | CoinflowNearHistoryProps
   | CoinflowPolygonHistoryProps;
 
-export interface CoinflowIFrameProps {
+export interface CoinflowIFrameProps
+  extends Omit<CoinflowTypes, 'merchantId'>,
+    Pick<
+      CoinflowCommonPurchaseProps,
+      | 'chargebackProtectionData'
+      | 'webhookInfo'
+      | 'amount'
+      | 'customerInfo'
+      | 'settlementType'
+    >,
+    Pick<
+      CoinflowCommonWithdrawProps,
+      | 'bankAccountLinkRedirect'
+      | 'additionalWallets'
+      | 'transactionSigner'
+      | 'lockAmount'
+    > {
   WebViewRef: React.RefObject<any | null>;
   route: string;
   amount?: number;
   transaction?: string;
   blockchain: CoinflowBlockchain;
-  webhookInfo?: object;
-  customerInfo?: CustomerInfo;
   email?: string;
   env?: CoinflowEnvs;
   deviceId?: string;
-  chargebackProtectionData?: ChargebackProtectionData;
   loaderBackground?: string;
   supportsVersionedTransactions?: boolean;
-  additionalWallets?: {
-    wallet: string;
-    blockchain: 'solana' | 'eth' | 'near' | 'polygon';
-  }[];
   rent?: {lamports: string | number};
   nativeSolToConvert?: {lamports: string | number};
   disableApplePay?: boolean;
   disableGooglePay?: boolean;
   planCode?: string;
-  settlementType?: SettlementType;
 }
 
 /** Transactions **/
@@ -302,6 +314,7 @@ export interface CoinflowCommonWithdrawProps extends CoinflowTypes {
   }[];
   supportsVersionedTransactions?: boolean;
   lockAmount?: boolean;
+  transactionSigner?: string;
 }
 
 export interface CoinflowSolanaWithdrawProps

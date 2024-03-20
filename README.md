@@ -24,6 +24,7 @@ Props:
 * `bankAccountLinkRedirect` (optional): The URL to be used for bank account setup
 * `supportsVersionedTransactions` (optional): Instruct the system that versioned transactions are supported
 * `additionalWallets` (optional): Define additional wallets to assign to the user
+* `transactionSigner` (optional): Public Key of the wallet which will actually execute the withdrawal transaction. Must be associated with the same withdrawer as the main wallet.
 
 ## Purchase Usage
 ```
@@ -57,6 +58,10 @@ Props:
 * `supportsVersionedTransactions` (optional): Instruct the system that you support versioned transactions
 * `rent` (optional, Solana only): Specify the blockchain rent amount to add to the total
 * `nativeSolToConvert` (optional, Solana only): Specify the amount of native SOL to convert wSOL for the purchase
+
+## 3.0.0
+
+- Require `signMessage` on wallets for stronger withdraw authentication
 
 ## 2.1.13
 
