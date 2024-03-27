@@ -118,6 +118,7 @@ export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & {
   supportsVersionedTransactions?: boolean;
   lockAmount?: boolean;
   theme?: MerchantTheme;
+  usePermit?: boolean;
 };
 
 export type WithStyles = {style?: StyleProp<ViewStyle>};
@@ -230,6 +231,8 @@ export interface CoinflowIFrameProps
   disableApplePay?: boolean;
   disableGooglePay?: boolean;
   planCode?: string;
+  settlementType?: SettlementType;
+  usePermit?: boolean;
 }
 
 /** Transactions **/
@@ -332,12 +335,14 @@ export interface CoinflowNearWithdrawProps extends CoinflowCommonWithdrawProps {
 export interface CoinflowEthWithdrawProps extends CoinflowCommonWithdrawProps {
   wallet: Omit<EthWallet, 'signMessage'>;
   blockchain: 'eth';
+  userPermit?: boolean;
 }
 
 export interface CoinflowPolygonWithdrawProps
   extends CoinflowCommonWithdrawProps {
   wallet: Omit<EthWallet, 'signMessage'>;
   blockchain: 'polygon';
+  usePermit?: boolean;
 }
 
 export type CoinflowWithdrawProps =

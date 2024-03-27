@@ -43,6 +43,7 @@ export class ReactNativeCoinflowUtils {
     lockAmount,
     nativeSolToConvert,
     theme,
+    usePermit,
     transactionSigner,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
@@ -120,6 +121,8 @@ export class ReactNativeCoinflowUtils {
     if (lockAmount) url.searchParams.append('lockAmount', 'true');
     if (transactionSigner)
       url.searchParams.append('transactionSigner', transactionSigner);
+
+    if (usePermit === false) url.searchParams.append('usePermit', 'false');
 
     return url.toString();
   }
