@@ -1,6 +1,7 @@
 import {CoinflowWebView} from './CoinflowWebView';
 import React from 'react';
 import {
+  CoinflowBaseWithdrawProps,
   CoinflowEthWithdrawProps,
   CoinflowNearWithdrawProps,
   CoinflowPolygonWithdrawProps,
@@ -21,10 +22,10 @@ export function CoinflowWithdraw(props: CoinflowWithdrawProps & WithStyles) {
       return <EvmContent {...props} />;
     case 'eth':
       return <EvmContent {...props} />;
+    case 'base':
+      return <EvmContent {...props} />;
     case 'near':
       return <NearPurchase {...props} />;
-    default:
-      return null;
   }
 }
 
@@ -50,7 +51,12 @@ function SolanaContent(props: CoinflowSolanaWithdrawProps & WithStyles) {
 }
 
 function EvmContent(
-  props: (CoinflowPolygonWithdrawProps | CoinflowEthWithdrawProps) & WithStyles
+  props: (
+    | CoinflowPolygonWithdrawProps
+    | CoinflowEthWithdrawProps
+    | CoinflowBaseWithdrawProps
+  ) &
+    WithStyles
 ) {
   const handlers = useEthIFrameMessageHandlers(props);
   const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);

@@ -60,6 +60,11 @@ Props:
 * `rent` (optional, Solana only): Specify the blockchain rent amount to add to the total
 * `nativeSolToConvert` (optional, Solana only): Specify the amount of native SOL to convert wSOL for the purchase
 
+## 3.1.0
+
+- Added base blockchain support
+- Added AuthOnly parameter to CoinflowPurchase
+
 ## 3.0.0
 
 - Require `signMessage` on wallets for stronger withdraw authentication

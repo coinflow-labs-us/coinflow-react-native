@@ -15,6 +15,10 @@ export function CoinflowWithdrawHistory(
         return props.wallet.accountId;
       case 'polygon':
         return props.wallet.address;
+      case 'eth':
+        return props.wallet.address;
+      case 'base':
+        return props.wallet.address;
     }
   }, []);
 

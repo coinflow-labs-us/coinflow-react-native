@@ -45,6 +45,7 @@ export class ReactNativeCoinflowUtils {
     theme,
     usePermit,
     transactionSigner,
+    authOnly,
   }: CoinflowWebViewProps): string {
     if (!publicKey) return '';
 
@@ -123,6 +124,7 @@ export class ReactNativeCoinflowUtils {
       url.searchParams.append('transactionSigner', transactionSigner);
 
     if (usePermit === false) url.searchParams.append('usePermit', 'false');
+    if (authOnly === true) url.searchParams.append('authOnly', 'true');
 
     return url.toString();
   }
