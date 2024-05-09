@@ -1,34 +1,36 @@
 import React, {useMemo} from 'react';
-import {CoinflowWebView} from './CoinflowWebView';
-import {CoinflowHistoryProps, WithStyles} from './CoinflowTypes';
+import {
+  CoinflowWebView,
+  CoinflowWebViewProps,
+  WithOnLoad,
+  WithStyles,
+} from './CoinflowWebView';
+import {
+  getWalletPubkey,
+  getHandlers,
+  IFrameMessageHandlers,
+  CoinflowHistoryProps,
+} from './common';
 
 export function CoinflowWithdrawHistory(
-  props: CoinflowHistoryProps & WithStyles
+  props: CoinflowHistoryProps & WithStyles & WithOnLoad
 ) {
-  const WebViewRef = React.useRef<any | null>(null); // TODO dont use any
+  const webviewProps = useMemo<CoinflowWebViewProps>(() => {
+    const walletPubkey = getWalletPubkey(props);
+    return {
+      ...props,
+      walletPubkey,
+      route: `/history/withdraw/${props.merchantId}`,
+      onLoad: props.onLoad,
+    };
+  }, [props]);
 
-  const publicKey = useMemo(() => {
-    switch (props.blockchain) {
-      case 'solana':
-        return props.wallet.publicKey?.toString();
-      case 'near':
-        return props.wallet.accountId;
-      case 'polygon':
-        return props.wallet.address;
-      case 'eth':
-        return props.wallet.address;
-      case 'base':
-        return props.wallet.address;
-    }
-  }, []);
+  const messageHandlers = useMemo<IFrameMessageHandlers>(() => {
+    return {
+      ...getHandlers(props),
+      handleHeightChange: props.handleHeightChange,
+    };
+  }, [props]);
 
-  return (
-    <CoinflowWebView
-      publicKey={publicKey}
-      WebViewRef={WebViewRef}
-      handleIframeMessages={() => Promise.resolve()}
-      route={`/history/withdraw/${props.merchantId}`}
-      {...props}
-    />
-  );
+  return <CoinflowWebView {...webviewProps} {...messageHandlers} />;
 }

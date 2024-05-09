@@ -1,6 +1,6 @@
 {
   "name": "@coinflowlabs/react-native",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "React Native Component for Coinflow",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -21,26 +21,40 @@
     "README.md"
   ],
   "scripts": {
-    "clean": "rimraf build",
-    "build": "tsc"
+    "clean": "rimraf build && rimraf ./src/common",
+    "build": "npm run codegen && tsc",
+    "codegen": "cp -r ../lib-common/src/ ./src/common/"
   },
   "peerDependencies": {
+    "bs58": "~5.0.0",
     "react": ">=16",
     "react-native": ">=0.66.0",
-    "react-native-webview": ">=11.16.0"
+    "react-native-webview": ">=11.16.0",
+    "@coinflowlabs/lib-common": "*"
   },
   "dependencies": {
     "react-native-get-random-values": "^1.11.0",
     "bs58": "^5.0.0",
     "bn.js": "^5.2.1",
-    "@solana/web3.js": "^1.90.0"
+    "@solana/web3.js": "^1.91.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.64",
     "@types/react-native": "^0.73.0",
     "eslint-config-react-app": "^7.0.1",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.5",
     "@solana/wallet-adapter-react": "^0.15.32",
     "@near-wallet-selector/core": "^8.9.3"
+  },
+  "peerDependenciesMeta": {
+    "@coinflowlabs/lib-common": {
+      "optional": true
+    },
+    "@solana/web3.js": {
+      "optional": true
+    },
+    "bs58": {
+      "optional": true
+    }
   }
 }

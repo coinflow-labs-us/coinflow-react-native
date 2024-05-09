@@ -1,88 +1,36 @@
-import {CoinflowWebView} from './CoinflowWebView';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
-  CoinflowBaseWithdrawProps,
-  CoinflowEthWithdrawProps,
-  CoinflowNearWithdrawProps,
-  CoinflowPolygonWithdrawProps,
-  CoinflowSolanaWithdrawProps,
-  CoinflowWithdrawProps,
+  CoinflowWebView,
+  CoinflowWebViewProps,
+  WithOnLoad,
   WithStyles,
-} from './CoinflowTypes';
-import {useSolanaIFrameMessageHandlers} from './wallet/SolanaIFrameMessageHandlers';
-import {useWebViewWallet} from './wallet/useWebViewWallet';
-import {useEthIFrameMessageHandlers} from './wallet/EthIFrameMessageHandlers';
-import {useNearIFrameMessageHandlers} from './wallet/NearIFrameMessageHandlers';
+} from './CoinflowWebView';
+import {
+  getWalletPubkey,
+  getHandlers,
+  IFrameMessageHandlers,
+  CoinflowWithdrawProps,
+} from './common';
 
-export function CoinflowWithdraw(props: CoinflowWithdrawProps & WithStyles) {
-  switch (props.blockchain) {
-    case 'solana':
-      return <SolanaContent {...props} />;
-    case 'polygon':
-      return <EvmContent {...props} />;
-    case 'eth':
-      return <EvmContent {...props} />;
-    case 'base':
-      return <EvmContent {...props} />;
-    case 'near':
-      return <NearPurchase {...props} />;
-  }
-}
-
-function SolanaContent(props: CoinflowSolanaWithdrawProps & WithStyles) {
-  const handlers = useSolanaIFrameMessageHandlers(props);
-  const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
-
-  const webviewProps = {
-    ...props,
-    supportsVersionedTransactions:
-      props.supportsVersionedTransactions !== false,
-  };
-
-  return (
-    <CoinflowWebView
-      publicKey={props.wallet.publicKey?.toString()}
-      WebViewRef={WebViewRef}
-      route={`/withdraw/${props.merchantId}`}
-      {...webviewProps}
-      handleIframeMessages={handleIframeMessages}
-    />
-  );
-}
-
-function EvmContent(
-  props: (
-    | CoinflowPolygonWithdrawProps
-    | CoinflowEthWithdrawProps
-    | CoinflowBaseWithdrawProps
-  ) &
-    WithStyles
+export function CoinflowWithdraw(
+  withdrawProps: CoinflowWithdrawProps & WithStyles & WithOnLoad
 ) {
-  const handlers = useEthIFrameMessageHandlers(props);
-  const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
+  const webviewProps = useMemo<CoinflowWebViewProps>(() => {
+    const walletPubkey = getWalletPubkey(withdrawProps);
+    return {
+      ...withdrawProps,
+      walletPubkey,
+      route: `/withdraw/${withdrawProps.merchantId}`,
+      onLoad: withdrawProps.onLoad,
+    };
+  }, [withdrawProps]);
 
-  return (
-    <CoinflowWebView
-      publicKey={props.wallet.address}
-      WebViewRef={WebViewRef}
-      route={`/withdraw/${props.merchantId}`}
-      {...props}
-      handleIframeMessages={handleIframeMessages}
-    />
-  );
-}
+  const messageHandlers = useMemo<IFrameMessageHandlers>(() => {
+    return {
+      ...getHandlers(withdrawProps),
+      handleHeightChange: withdrawProps.handleHeightChange,
+    };
+  }, [withdrawProps]);
 
-function NearPurchase(props: CoinflowNearWithdrawProps & WithStyles) {
-  const handlers = useNearIFrameMessageHandlers(props);
-  const {WebViewRef, handleIframeMessages} = useWebViewWallet(handlers, props);
-
-  return (
-    <CoinflowWebView
-      publicKey={props.wallet.accountId}
-      WebViewRef={WebViewRef}
-      route={`/withdraw/${props.merchantId}`}
-      {...props}
-      handleIframeMessages={handleIframeMessages}
-    />
-  );
+  return <CoinflowWebView {...webviewProps} {...messageHandlers} />;
 }
