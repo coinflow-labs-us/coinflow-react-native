@@ -161,14 +161,12 @@ var CoinflowUtils = /** @class */ (function () {
                     throw new Error('@solana/web3.js dependency is required for Solana');
                 if (!base58)
                     throw new Error('bs58 dependency is required for Solana');
-                if (transaction instanceof web3.Transaction)
-                    return base58.encode(transaction.serialize({
-                        requireAllSignatures: false,
-                        verifySignatures: false,
-                    }));
-                if (transaction instanceof web3.VersionedTransaction)
-                    return base58.encode(transaction.serialize());
-                return undefined;
+                if (!transaction)
+                    return undefined;
+                return base58.encode(transaction.serialize({
+                    requireAllSignatures: false,
+                    verifySignatures: false,
+                }));
             },
             polygon: function () {
                 if (!('transaction' in props))

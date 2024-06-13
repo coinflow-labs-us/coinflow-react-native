@@ -26,8 +26,7 @@ export function CoinflowWebView(props) {
             'etherscan',
             'persona',
             'polyscan',
-            'near.org',
-            'plaid',
+            'localhost:3000',
             'coinflow.cash',
         ];
         var blacklist = ['pay.google.com', 'tokenex.com'];

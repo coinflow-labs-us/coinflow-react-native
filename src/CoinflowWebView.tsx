@@ -53,8 +53,7 @@ export function CoinflowWebView(
         'etherscan',
         'persona',
         'polyscan',
-        'near.org',
-        'plaid',
+        'localhost:3000',
         'coinflow.cash',
       ];
 
