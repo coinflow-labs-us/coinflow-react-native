@@ -58,6 +58,12 @@ Props:
 * `rent` (optional, Solana only): Specify the blockchain rent amount to add to the total
 * `nativeSolToConvert` (optional, Solana only): Specify the amount of native SOL to convert wSOL for the purchase
 
+# Changelog
+
+## 3.1.5
+
+- Allow custom taker on reservoir transactions
+
 ## 3.1.4
 
 - Fix redirect bug on checkout component
