@@ -71,12 +71,13 @@ export class CoinflowUtils {
 
   static getCoinflowUrl({
     walletPubkey,
+    sessionKey,
     route,
     routePrefix,
     env,
     amount,
     transaction,
-    blockchain,
+    blockchain = 'solana',
     webhookInfo,
     email,
     loaderBackground,
@@ -107,12 +108,15 @@ export class CoinflowUtils {
     origins,
     threeDsChallengePreference,
     supportEmail,
+    destinationAuthKey,
   }: CoinflowIFrameProps): string {
     const prefix = routePrefix
       ? `/${routePrefix}/${blockchain}`
       : `/${blockchain}`;
     const url = new URL(prefix + route, CoinflowUtils.getCoinflowBaseUrl(env));
-    url.searchParams.append('pubkey', walletPubkey!);
+
+    if (walletPubkey) url.searchParams.append('pubkey', walletPubkey);
+    if (sessionKey) url.searchParams.append('sessionKey', sessionKey);
 
     if (transaction) {
       url.searchParams.append('transaction', transaction);
@@ -233,10 +237,15 @@ export class CoinflowUtils {
         threeDsChallengePreference
       );
 
+    if (destinationAuthKey)
+      url.searchParams.append('destinationAuthKey', destinationAuthKey);
+
     return url.toString();
   }
 
   static getTransaction(props: CoinflowPurchaseProps): string | undefined {
+    if (!props.blockchain) return undefined;
+
     return this.byBlockchain<() => string | undefined>(props.blockchain, {
       solana: () => {
         if (!('transaction' in props)) return undefined;
@@ -285,12 +294,23 @@ export class CoinflowUtils {
         const {action} = props;
         return LZString.compressToEncodedURIComponent(JSON.stringify(action));
       },
+      user: () => {
+        return undefined;
+      },
     })();
   }
 
   static byBlockchain<T>(
     blockchain: CoinflowBlockchain,
-    args: {solana: T; near: T; eth: T; polygon: T; base: T; arbitrum: T}
+    args: {
+      solana: T;
+      near: T;
+      eth: T;
+      polygon: T;
+      base: T;
+      arbitrum: T;
+      user: T;
+    }
   ): T {
     switch (blockchain) {
       case 'solana':
@@ -305,6 +325,8 @@ export class CoinflowUtils {
         return args.base;
       case 'arbitrum':
         return args.arbitrum;
+      case 'user':
+        return args.user;
       default:
         throw new Error('blockchain not supported!');
     }

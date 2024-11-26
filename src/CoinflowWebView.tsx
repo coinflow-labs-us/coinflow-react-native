@@ -57,7 +57,7 @@ export function CoinflowWebView(
         'coinflow.cash',
       ];
 
-      const blacklist = ['pay.google.com', 'tokenex.com'];
+      const blacklist = ['pay.google.com', 'tokenex.com', 'api'];
 
       const shouldRedirect =
         (request.url.includes('https') || request.url.includes('http')) &&

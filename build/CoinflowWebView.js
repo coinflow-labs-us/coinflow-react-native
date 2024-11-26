@@ -29,7 +29,7 @@ export function CoinflowWebView(props) {
             'localhost:3000',
             'coinflow.cash',
         ];
-        var blacklist = ['pay.google.com', 'tokenex.com'];
+        var blacklist = ['pay.google.com', 'tokenex.com', 'api'];
         var shouldRedirect = (request.url.includes('https') || request.url.includes('http')) &&
             whitelist.some(function (item) { return request.url.includes(item); }) &&
             !blacklist.some(function (item) { return request.url.includes(item); });

@@ -64,12 +64,15 @@ var CoinflowUtils = /** @class */ (function () {
     };
     CoinflowUtils.getCoinflowUrl = function (_a) {
         var _b;
-        var walletPubkey = _a.walletPubkey, route = _a.route, routePrefix = _a.routePrefix, env = _a.env, amount = _a.amount, transaction = _a.transaction, blockchain = _a.blockchain, webhookInfo = _a.webhookInfo, email = _a.email, loaderBackground = _a.loaderBackground, handleHeightChange = _a.handleHeightChange, bankAccountLinkRedirect = _a.bankAccountLinkRedirect, additionalWallets = _a.additionalWallets, nearDeposit = _a.nearDeposit, chargebackProtectionData = _a.chargebackProtectionData, merchantCss = _a.merchantCss, color = _a.color, rent = _a.rent, lockDefaultToken = _a.lockDefaultToken, token = _a.token, tokens = _a.tokens, planCode = _a.planCode, disableApplePay = _a.disableApplePay, disableGooglePay = _a.disableGooglePay, customerInfo = _a.customerInfo, settlementType = _a.settlementType, lockAmount = _a.lockAmount, nativeSolToConvert = _a.nativeSolToConvert, theme = _a.theme, usePermit = _a.usePermit, transactionSigner = _a.transactionSigner, authOnly = _a.authOnly, deviceId = _a.deviceId, jwtToken = _a.jwtToken, origins = _a.origins, threeDsChallengePreference = _a.threeDsChallengePreference, supportEmail = _a.supportEmail;
+        var walletPubkey = _a.walletPubkey, sessionKey = _a.sessionKey, route = _a.route, routePrefix = _a.routePrefix, env = _a.env, amount = _a.amount, transaction = _a.transaction, _c = _a.blockchain, blockchain = _c === void 0 ? 'solana' : _c, webhookInfo = _a.webhookInfo, email = _a.email, loaderBackground = _a.loaderBackground, handleHeightChange = _a.handleHeightChange, bankAccountLinkRedirect = _a.bankAccountLinkRedirect, additionalWallets = _a.additionalWallets, nearDeposit = _a.nearDeposit, chargebackProtectionData = _a.chargebackProtectionData, merchantCss = _a.merchantCss, color = _a.color, rent = _a.rent, lockDefaultToken = _a.lockDefaultToken, token = _a.token, tokens = _a.tokens, planCode = _a.planCode, disableApplePay = _a.disableApplePay, disableGooglePay = _a.disableGooglePay, customerInfo = _a.customerInfo, settlementType = _a.settlementType, lockAmount = _a.lockAmount, nativeSolToConvert = _a.nativeSolToConvert, theme = _a.theme, usePermit = _a.usePermit, transactionSigner = _a.transactionSigner, authOnly = _a.authOnly, deviceId = _a.deviceId, jwtToken = _a.jwtToken, origins = _a.origins, threeDsChallengePreference = _a.threeDsChallengePreference, supportEmail = _a.supportEmail, destinationAuthKey = _a.destinationAuthKey;
         var prefix = routePrefix
             ? "/".concat(routePrefix, "/").concat(blockchain)
             : "/".concat(blockchain);
         var url = new URL(prefix + route, CoinflowUtils.getCoinflowBaseUrl(env));
-        url.searchParams.append('pubkey', walletPubkey);
+        if (walletPubkey)
+            url.searchParams.append('pubkey', walletPubkey);
+        if (sessionKey)
+            url.searchParams.append('sessionKey', sessionKey);
         if (transaction) {
             url.searchParams.append('transaction', transaction);
         }
@@ -155,9 +158,13 @@ var CoinflowUtils = /** @class */ (function () {
             url.searchParams.append('origins', LZString.compressToEncodedURIComponent(JSON.stringify(origins)));
         if (threeDsChallengePreference)
             url.searchParams.append('threeDsChallengePreference', threeDsChallengePreference);
+        if (destinationAuthKey)
+            url.searchParams.append('destinationAuthKey', destinationAuthKey);
         return url.toString();
     };
     CoinflowUtils.getTransaction = function (props) {
+        if (!props.blockchain)
+            return undefined;
         return this.byBlockchain(props.blockchain, {
             solana: function () {
                 if (!('transaction' in props))
@@ -204,6 +211,9 @@ var CoinflowUtils = /** @class */ (function () {
                 var action = props.action;
                 return LZString.compressToEncodedURIComponent(JSON.stringify(action));
             },
+            user: function () {
+                return undefined;
+            },
         })();
     };
     CoinflowUtils.byBlockchain = function (blockchain, args) {
@@ -220,6 +230,8 @@ var CoinflowUtils = /** @class */ (function () {
                 return args.base;
             case 'arbitrum':
                 return args.arbitrum;
+            case 'user':
+                return args.user;
             default:
                 throw new Error('blockchain not supported!');
         }

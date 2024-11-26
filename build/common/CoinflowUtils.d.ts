@@ -9,7 +9,7 @@ export declare class CoinflowUtils {
     }>;
     static getCoinflowBaseUrl(env?: CoinflowEnvs): string;
     static getCoinflowApiUrl(env?: CoinflowEnvs): string;
-    static getCoinflowUrl({ walletPubkey, route, routePrefix, env, amount, transaction, blockchain, webhookInfo, email, loaderBackground, handleHeightChange, bankAccountLinkRedirect, additionalWallets, nearDeposit, chargebackProtectionData, merchantCss, color, rent, lockDefaultToken, token, tokens, planCode, disableApplePay, disableGooglePay, customerInfo, settlementType, lockAmount, nativeSolToConvert, theme, usePermit, transactionSigner, authOnly, deviceId, jwtToken, origins, threeDsChallengePreference, supportEmail, }: CoinflowIFrameProps): string;
+    static getCoinflowUrl({ walletPubkey, sessionKey, route, routePrefix, env, amount, transaction, blockchain, webhookInfo, email, loaderBackground, handleHeightChange, bankAccountLinkRedirect, additionalWallets, nearDeposit, chargebackProtectionData, merchantCss, color, rent, lockDefaultToken, token, tokens, planCode, disableApplePay, disableGooglePay, customerInfo, settlementType, lockAmount, nativeSolToConvert, theme, usePermit, transactionSigner, authOnly, deviceId, jwtToken, origins, threeDsChallengePreference, supportEmail, destinationAuthKey, }: CoinflowIFrameProps): string;
     static getTransaction(props: CoinflowPurchaseProps): string | undefined;
     static byBlockchain<T>(blockchain: CoinflowBlockchain, args: {
         solana: T;
@@ -18,6 +18,7 @@ export declare class CoinflowUtils {
         polygon: T;
         base: T;
         arbitrum: T;
+        user: T;
     }): T;
     static getWalletFromUserId({ userId, merchantId, env, }: {
         userId: string;

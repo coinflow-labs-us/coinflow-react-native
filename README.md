@@ -66,6 +66,18 @@ Props:
 
 # Changelog
 
+## 3.4.2
+
+- Extended redirect blacklist for CoinflowWebView
+
+## 3.4.1
+
+- Added sessionKey authentication mechanism to `CoinflowWithdraw`
+
+## 3.4.0
+
+- Added sessionKey authentication mechanism to `CoinflowPurchase`
+
 ## 3.2.1
 
 - CoinflowPurchaseV2 component added for a modernized purchase flow
