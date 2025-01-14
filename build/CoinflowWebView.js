@@ -40,8 +40,6 @@ export function CoinflowWebView(props) {
         return false;
     }, []);
     return useMemo(function () {
-        if (!props.walletPubkey)
-            return null;
         var enableApplePay = !props.disableApplePay &&
             props.route.includes('/purchase/') &&
             Platform.OS === 'ios';
@@ -50,7 +48,7 @@ export function CoinflowWebView(props) {
                     flex: 1,
                 },
                 style,
-            ], enableApplePay: enableApplePay, keyboardDisplayRequiresUserAction: false, showsVerticalScrollIndicator: false, onShouldStartLoadWithRequest: onShouldStartLoadWithRequest, ref: WebViewRef, source: { uri: url }, onMessage: function (event) {
+            ], webviewDebuggingEnabled: true, originWhitelist: ['*'], enableApplePay: enableApplePay, keyboardDisplayRequiresUserAction: false, showsVerticalScrollIndicator: false, onShouldStartLoadWithRequest: onShouldStartLoadWithRequest, ref: WebViewRef, source: { uri: url }, onMessage: function (event) {
                 return handleIframeMessages({ data: event.nativeEvent.data });
             }, onLoad: onLoad }));
     }, [url]);

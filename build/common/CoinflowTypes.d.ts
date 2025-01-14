@@ -1,4 +1,5 @@
 import type { Connection, VersionedTransaction, PublicKey, Signer, Transaction } from '@solana/web3.js';
+import { Subtotal } from './Subtotal';
 export declare enum SettlementType {
     Credits = "Credits",
     USDC = "USDC",
@@ -17,6 +18,7 @@ export type MerchantTheme = {
     textColor?: string;
     textColorAccent?: string;
     textColorAction?: string;
+    ctaColor?: string;
     font?: string;
     style?: MerchantStyle;
 };
@@ -49,6 +51,14 @@ export type OnSuccessMethod = (args: {
     paymentId: string;
     hash?: string | undefined;
 } | string) => void | Promise<void>;
+export type AuthDeclinedWalletCallInfo = {
+    title: string;
+    code: string;
+    action: string;
+    message: string;
+    total: string;
+};
+export type OnAuthDeclinedMethod = (args: AuthDeclinedWalletCallInfo | string | string) => void | Promise<void>;
 /** Wallets **/
 export interface SolanaWallet {
     publicKey: PublicKey | null;
@@ -161,8 +171,9 @@ export declare enum ThreeDsChallengePreference {
     Challenge = "Challenge"
 }
 export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
-    amount?: number | string;
+    subtotal?: Subtotal;
     onSuccess?: OnSuccessMethod;
+    onAuthDeclined?: OnAuthDeclinedMethod;
     webhookInfo?: {
         [key: string]: any;
     };
@@ -174,6 +185,12 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
     customerInfo?: CustomerInfo;
     settlementType?: SettlementType;
     authOnly?: boolean;
+    /**
+     * The DeviceID gotten from the Coinflow SDK:
+     *  https://docs.coinflow.cash/docs/implement-chargeback-protection#how-to-add-chargeback-protection
+     *
+     * window?.nSureSDK?.getDeviceId()
+     */
     deviceId?: string;
     jwtToken?: string;
     /**
@@ -199,7 +216,6 @@ export interface CoinflowSolanaPurchaseProps extends CoinflowCommonPurchaseProps
     debugTx?: boolean;
     connection: Connection;
     blockchain: 'solana';
-    token?: PublicKey | string;
     rent?: {
         lamports: string | number;
     };
@@ -220,7 +236,6 @@ export interface CoinflowNearPurchaseProps extends CoinflowCommonPurchaseProps {
 }
 export interface CoinflowEvmPurchaseProps extends CoinflowCommonPurchaseProps {
     transaction?: EvmTransactionData;
-    token?: string;
     wallet: EthWallet;
 }
 export interface CoinflowPolygonPurchaseProps extends CoinflowEvmPurchaseProps {
@@ -336,7 +351,7 @@ export interface TokenRedeem extends CommonEvmRedeem {
     destination: string;
 }
 export type EvmTransactionData = SafeMintRedeem | ReturnedTokenIdRedeem | ReservoirRedeem | KnownTokenIdRedeem | NormalRedeem | TokenRedeem;
-export interface CoinflowIFrameProps extends Omit<CoinflowTypes, 'merchantId'>, Pick<CoinflowCommonPurchaseProps, 'chargebackProtectionData' | 'webhookInfo' | 'amount' | 'customerInfo' | 'settlementType' | 'email' | 'planCode' | 'deviceId' | 'jwtToken' | 'origins' | 'threeDsChallengePreference' | 'supportEmail'>, Pick<CoinflowCommonWithdrawProps, 'bankAccountLinkRedirect' | 'additionalWallets' | 'transactionSigner' | 'lockAmount' | 'lockDefaultToken' | 'origins'>, Pick<CoinflowEvmPurchaseProps, 'authOnly'>, Pick<CoinflowSolanaPurchaseProps, 'rent' | 'nativeSolToConvert' | 'token' | 'destinationAuthKey'> {
+export interface CoinflowIFrameProps extends Omit<CoinflowTypes, 'merchantId'>, Pick<CoinflowCommonPurchaseProps, 'chargebackProtectionData' | 'webhookInfo' | 'subtotal' | 'customerInfo' | 'settlementType' | 'email' | 'planCode' | 'deviceId' | 'jwtToken' | 'origins' | 'threeDsChallengePreference' | 'supportEmail'>, Pick<CoinflowCommonWithdrawProps, 'bankAccountLinkRedirect' | 'additionalWallets' | 'transactionSigner' | 'lockAmount' | 'lockDefaultToken' | 'origins'>, Pick<CoinflowEvmPurchaseProps, 'authOnly'>, Pick<CoinflowSolanaPurchaseProps, 'rent' | 'nativeSolToConvert' | 'destinationAuthKey'> {
     walletPubkey: string | null | undefined;
     sessionKey?: string;
     route: string;

@@ -8,4 +8,4 @@ export type WithOnLoad = {
     onLoad?: () => void;
 };
 export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & WithOnLoad;
-export declare function CoinflowWebView(props: CoinflowWebViewProps & WithStyles & IFrameMessageHandlers): React.JSX.Element | null;
+export declare function CoinflowWebView(props: CoinflowWebViewProps & WithStyles & IFrameMessageHandlers): React.JSX.Element;

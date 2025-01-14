@@ -3,12 +3,11 @@ import {
   CoinflowEnvs,
   CoinflowIFrameProps,
   CoinflowPurchaseProps,
-  SolanaWallet,
 } from './CoinflowTypes';
 import {web3, base58} from './SolanaPeerDeps';
 import LZString from 'lz-string';
-import {Keypair, Transaction, VersionedTransaction} from '@solana/web3.js';
-import {sign} from 'tweetnacl';
+import type {Transaction, VersionedTransaction} from '@solana/web3.js';
+import {Currency} from './Subtotal';
 
 export class CoinflowUtils {
   env: CoinflowEnvs;
@@ -36,25 +35,6 @@ export class CoinflowUtils {
       });
   }
 
-  async getCreditBalance(
-    publicKey: string,
-    merchantId: string,
-    blockchain: 'solana' | 'near'
-  ): Promise<{cents: number}> {
-    const response = await fetch(
-      this.url + `/api/customer/balances/${merchantId}`,
-      {
-        method: 'GET',
-        headers: {
-          'x-coinflow-auth-wallet': publicKey,
-          'x-coinflow-auth-blockchain': blockchain,
-        },
-      }
-    );
-    const {credits} = await response.json();
-    return credits;
-  }
-
   static getCoinflowBaseUrl(env?: CoinflowEnvs): string {
     if (!env || env === 'prod') return 'https://coinflow.cash';
     if (env === 'local') return 'http://localhost:3000';
@@ -75,7 +55,7 @@ export class CoinflowUtils {
     route,
     routePrefix,
     env,
-    amount,
+    subtotal,
     transaction,
     blockchain = 'solana',
     webhookInfo,
@@ -90,7 +70,6 @@ export class CoinflowUtils {
     color,
     rent,
     lockDefaultToken,
-    token,
     tokens,
     planCode,
     disableApplePay,
@@ -121,8 +100,19 @@ export class CoinflowUtils {
     if (transaction) {
       url.searchParams.append('transaction', transaction);
     }
-    if (amount) {
-      url.searchParams.append('amount', amount.toString());
+
+    if (subtotal) {
+      if ('cents' in subtotal) {
+        url.searchParams.append('cents', subtotal.cents.toString());
+        if ('currency' in subtotal) {
+          url.searchParams.append('currency', subtotal.currency.toString());
+        } else {
+          url.searchParams.append('currency', Currency.USD);
+        }
+      } else {
+        url.searchParams.append('token', subtotal.address.toString());
+        url.searchParams.append('amount', subtotal.amount.toString());
+      }
     }
 
     if (webhookInfo) {
@@ -150,10 +140,6 @@ export class CoinflowUtils {
       url.searchParams.append('email', email);
     }
     if (supportEmail) url.searchParams.append('supportEmail', supportEmail);
-
-    if (token) {
-      url.searchParams.append('token', token.toString());
-    }
 
     if (tokens) {
       url.searchParams.append('tokens', tokens.toString());
@@ -330,82 +316,5 @@ export class CoinflowUtils {
       default:
         throw new Error('blockchain not supported!');
     }
-  }
-
-  static async getWalletFromUserId({
-    userId,
-    merchantId,
-    env,
-  }: {
-    userId: string;
-    merchantId: string;
-    env: CoinflowEnvs;
-  }): Promise<SolanaWallet> {
-    return this.getWalletFromEmail({
-      email: userId,
-      merchantId,
-      env,
-    });
-  }
-
-  static async getWalletFromEmail({
-    email,
-    merchantId,
-    env,
-  }: {
-    email: string;
-    merchantId: string;
-    env: CoinflowEnvs;
-  }): Promise<SolanaWallet> {
-    const buffer = new TextEncoder().encode(email);
-    const crypto = window.crypto.subtle;
-    const hash = await crypto.digest('SHA-256', buffer);
-    const seed = new Uint8Array(hash);
-    const keypair = Keypair.fromSeed(seed);
-    return {
-      publicKey: keypair.publicKey,
-      signMessage: (message: Uint8Array) =>
-        Promise.resolve(sign.detached(message, keypair.secretKey)),
-      signTransaction: async <T extends Transaction | VersionedTransaction>(
-        transaction: T
-      ): Promise<T> => {
-        if (transaction instanceof Transaction) {
-          transaction.sign(keypair);
-          return transaction;
-        } else {
-          transaction.sign([keypair]);
-          return transaction;
-        }
-      },
-      sendTransaction: async <T extends Transaction | VersionedTransaction>(
-        transaction: T
-      ): Promise<string> => {
-        if (transaction instanceof Transaction) {
-          transaction.sign(keypair);
-        } else {
-          transaction.sign([keypair]);
-        }
-
-        const coinflowBaseUrl = this.getCoinflowApiUrl(env);
-        const options = {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-coinflow-auth-wallet': keypair.publicKey.toString(),
-            'x-coinflow-auth-blockchain': 'solana',
-          },
-          body: JSON.stringify({
-            merchantId,
-            signedTransaction: base58?.encode(transaction.serialize()),
-          }),
-        };
-
-        const {signature} = await fetch(
-          coinflowBaseUrl + '/api/utils/send-coinflow-tx',
-          options
-        ).then(res => res.json());
-        return signature;
-      },
-    };
   }
 }

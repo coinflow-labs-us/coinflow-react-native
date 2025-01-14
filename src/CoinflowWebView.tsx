@@ -75,8 +75,6 @@ export function CoinflowWebView(
   );
 
   return useMemo(() => {
-    if (!props.walletPubkey) return null;
-
     const enableApplePay =
       !props.disableApplePay &&
       props.route.includes('/purchase/') &&
@@ -90,6 +88,8 @@ export function CoinflowWebView(
           },
           style,
         ]}
+        webviewDebuggingEnabled={true}
+        originWhitelist={['*']}
         enableApplePay={enableApplePay}
         keyboardDisplayRequiresUserAction={false}
         showsVerticalScrollIndicator={false}

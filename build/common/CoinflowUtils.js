@@ -1,8 +1,7 @@
 import { __awaiter, __generator } from "tslib";
 import { web3, base58 } from './SolanaPeerDeps';
 import LZString from 'lz-string';
-import { Keypair, Transaction } from '@solana/web3.js';
-import { sign } from 'tweetnacl';
+import { Currency } from './Subtotal';
 var CoinflowUtils = /** @class */ (function () {
     function CoinflowUtils(env) {
         this.env = env !== null && env !== void 0 ? env : 'prod';
@@ -26,28 +25,6 @@ var CoinflowUtils = /** @class */ (function () {
             });
         });
     };
-    CoinflowUtils.prototype.getCreditBalance = function (publicKey, merchantId, blockchain) {
-        return __awaiter(this, void 0, void 0, function () {
-            var response, credits;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(this.url + "/api/customer/balances/".concat(merchantId), {
-                            method: 'GET',
-                            headers: {
-                                'x-coinflow-auth-wallet': publicKey,
-                                'x-coinflow-auth-blockchain': blockchain,
-                            },
-                        })];
-                    case 1:
-                        response = _a.sent();
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        credits = (_a.sent()).credits;
-                        return [2 /*return*/, credits];
-                }
-            });
-        });
-    };
     CoinflowUtils.getCoinflowBaseUrl = function (env) {
         if (!env || env === 'prod')
             return 'https://coinflow.cash';
@@ -64,7 +41,7 @@ var CoinflowUtils = /** @class */ (function () {
     };
     CoinflowUtils.getCoinflowUrl = function (_a) {
         var _b;
-        var walletPubkey = _a.walletPubkey, sessionKey = _a.sessionKey, route = _a.route, routePrefix = _a.routePrefix, env = _a.env, amount = _a.amount, transaction = _a.transaction, _c = _a.blockchain, blockchain = _c === void 0 ? 'solana' : _c, webhookInfo = _a.webhookInfo, email = _a.email, loaderBackground = _a.loaderBackground, handleHeightChange = _a.handleHeightChange, bankAccountLinkRedirect = _a.bankAccountLinkRedirect, additionalWallets = _a.additionalWallets, nearDeposit = _a.nearDeposit, chargebackProtectionData = _a.chargebackProtectionData, merchantCss = _a.merchantCss, color = _a.color, rent = _a.rent, lockDefaultToken = _a.lockDefaultToken, token = _a.token, tokens = _a.tokens, planCode = _a.planCode, disableApplePay = _a.disableApplePay, disableGooglePay = _a.disableGooglePay, customerInfo = _a.customerInfo, settlementType = _a.settlementType, lockAmount = _a.lockAmount, nativeSolToConvert = _a.nativeSolToConvert, theme = _a.theme, usePermit = _a.usePermit, transactionSigner = _a.transactionSigner, authOnly = _a.authOnly, deviceId = _a.deviceId, jwtToken = _a.jwtToken, origins = _a.origins, threeDsChallengePreference = _a.threeDsChallengePreference, supportEmail = _a.supportEmail, destinationAuthKey = _a.destinationAuthKey;
+        var walletPubkey = _a.walletPubkey, sessionKey = _a.sessionKey, route = _a.route, routePrefix = _a.routePrefix, env = _a.env, subtotal = _a.subtotal, transaction = _a.transaction, _c = _a.blockchain, blockchain = _c === void 0 ? 'solana' : _c, webhookInfo = _a.webhookInfo, email = _a.email, loaderBackground = _a.loaderBackground, handleHeightChange = _a.handleHeightChange, bankAccountLinkRedirect = _a.bankAccountLinkRedirect, additionalWallets = _a.additionalWallets, nearDeposit = _a.nearDeposit, chargebackProtectionData = _a.chargebackProtectionData, merchantCss = _a.merchantCss, color = _a.color, rent = _a.rent, lockDefaultToken = _a.lockDefaultToken, tokens = _a.tokens, planCode = _a.planCode, disableApplePay = _a.disableApplePay, disableGooglePay = _a.disableGooglePay, customerInfo = _a.customerInfo, settlementType = _a.settlementType, lockAmount = _a.lockAmount, nativeSolToConvert = _a.nativeSolToConvert, theme = _a.theme, usePermit = _a.usePermit, transactionSigner = _a.transactionSigner, authOnly = _a.authOnly, deviceId = _a.deviceId, jwtToken = _a.jwtToken, origins = _a.origins, threeDsChallengePreference = _a.threeDsChallengePreference, supportEmail = _a.supportEmail, destinationAuthKey = _a.destinationAuthKey;
         var prefix = routePrefix
             ? "/".concat(routePrefix, "/").concat(blockchain)
             : "/".concat(blockchain);
@@ -76,8 +53,20 @@ var CoinflowUtils = /** @class */ (function () {
         if (transaction) {
             url.searchParams.append('transaction', transaction);
         }
-        if (amount) {
-            url.searchParams.append('amount', amount.toString());
+        if (subtotal) {
+            if ('cents' in subtotal) {
+                url.searchParams.append('cents', subtotal.cents.toString());
+                if ('currency' in subtotal) {
+                    url.searchParams.append('currency', subtotal.currency.toString());
+                }
+                else {
+                    url.searchParams.append('currency', Currency.USD);
+                }
+            }
+            else {
+                url.searchParams.append('token', subtotal.address.toString());
+                url.searchParams.append('amount', subtotal.amount.toString());
+            }
         }
         if (webhookInfo) {
             url.searchParams.append('webhookInfo', LZString.compressToEncodedURIComponent(JSON.stringify(webhookInfo)));
@@ -93,9 +82,6 @@ var CoinflowUtils = /** @class */ (function () {
         }
         if (supportEmail)
             url.searchParams.append('supportEmail', supportEmail);
-        if (token) {
-            url.searchParams.append('token', token.toString());
-        }
         if (tokens) {
             url.searchParams.append('tokens', tokens.toString());
         }
@@ -235,87 +221,6 @@ var CoinflowUtils = /** @class */ (function () {
             default:
                 throw new Error('blockchain not supported!');
         }
-    };
-    CoinflowUtils.getWalletFromUserId = function (_a) {
-        return __awaiter(this, arguments, void 0, function (_b) {
-            var userId = _b.userId, merchantId = _b.merchantId, env = _b.env;
-            return __generator(this, function (_c) {
-                return [2 /*return*/, this.getWalletFromEmail({
-                        email: userId,
-                        merchantId: merchantId,
-                        env: env,
-                    })];
-            });
-        });
-    };
-    CoinflowUtils.getWalletFromEmail = function (_a) {
-        return __awaiter(this, arguments, void 0, function (_b) {
-            var buffer, crypto, hash, seed, keypair;
-            var _this = this;
-            var email = _b.email, merchantId = _b.merchantId, env = _b.env;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        buffer = new TextEncoder().encode(email);
-                        crypto = window.crypto.subtle;
-                        return [4 /*yield*/, crypto.digest('SHA-256', buffer)];
-                    case 1:
-                        hash = _c.sent();
-                        seed = new Uint8Array(hash);
-                        keypair = Keypair.fromSeed(seed);
-                        return [2 /*return*/, {
-                                publicKey: keypair.publicKey,
-                                signMessage: function (message) {
-                                    return Promise.resolve(sign.detached(message, keypair.secretKey));
-                                },
-                                signTransaction: function (transaction) { return __awaiter(_this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        if (transaction instanceof Transaction) {
-                                            transaction.sign(keypair);
-                                            return [2 /*return*/, transaction];
-                                        }
-                                        else {
-                                            transaction.sign([keypair]);
-                                            return [2 /*return*/, transaction];
-                                        }
-                                        return [2 /*return*/];
-                                    });
-                                }); },
-                                sendTransaction: function (transaction) { return __awaiter(_this, void 0, void 0, function () {
-                                    var coinflowBaseUrl, options, signature;
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0:
-                                                if (transaction instanceof Transaction) {
-                                                    transaction.sign(keypair);
-                                                }
-                                                else {
-                                                    transaction.sign([keypair]);
-                                                }
-                                                coinflowBaseUrl = this.getCoinflowApiUrl(env);
-                                                options = {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'content-type': 'application/json',
-                                                        'x-coinflow-auth-wallet': keypair.publicKey.toString(),
-                                                        'x-coinflow-auth-blockchain': 'solana',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        merchantId: merchantId,
-                                                        signedTransaction: base58 === null || base58 === void 0 ? void 0 : base58.encode(transaction.serialize()),
-                                                    }),
-                                                };
-                                                return [4 /*yield*/, fetch(coinflowBaseUrl + '/api/utils/send-coinflow-tx', options).then(function (res) { return res.json(); })];
-                                            case 1:
-                                                signature = (_a.sent()).signature;
-                                                return [2 /*return*/, signature];
-                                        }
-                                    });
-                                }); },
-                            }];
-                }
-            });
-        });
     };
     return CoinflowUtils;
 }());

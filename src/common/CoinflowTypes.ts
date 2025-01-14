@@ -5,6 +5,7 @@ import type {
   Signer,
   Transaction,
 } from '@solana/web3.js';
+import {Subtotal} from './Subtotal';
 
 export enum SettlementType {
   Credits = 'Credits',
@@ -26,6 +27,7 @@ export type MerchantTheme = {
   textColor?: string;
   textColorAccent?: string;
   textColorAction?: string;
+  ctaColor?: string;
   font?: string;
   style?: MerchantStyle;
 };
@@ -78,6 +80,18 @@ export type OnSuccessMethod = (
         hash?: string | undefined;
       }
     | string
+) => void | Promise<void>;
+
+export type AuthDeclinedWalletCallInfo = {
+  title: string;
+  code: string;
+  action: string;
+  message: string;
+  total: string;
+};
+
+export type OnAuthDeclinedMethod = (
+  args: AuthDeclinedWalletCallInfo | string | string
 ) => void | Promise<void>;
 
 /** Wallets **/
@@ -246,8 +260,9 @@ export enum ThreeDsChallengePreference {
 }
 
 export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
-  amount?: number | string;
+  subtotal?: Subtotal;
   onSuccess?: OnSuccessMethod;
+  onAuthDeclined?: OnAuthDeclinedMethod;
   webhookInfo?: {
     [key: string]: any;
   };
@@ -259,6 +274,12 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   customerInfo?: CustomerInfo;
   settlementType?: SettlementType;
   authOnly?: boolean;
+  /**
+   * The DeviceID gotten from the Coinflow SDK:
+   *  https://docs.coinflow.cash/docs/implement-chargeback-protection#how-to-add-chargeback-protection
+   *
+   * window?.nSureSDK?.getDeviceId()
+   */
   deviceId?: string;
   jwtToken?: string;
   /**
@@ -286,7 +307,6 @@ export interface CoinflowSolanaPurchaseProps
   debugTx?: boolean;
   connection: Connection;
   blockchain: 'solana';
-  token?: PublicKey | string;
   rent?: {lamports: string | number};
   nativeSolToConvert?: {lamports: string | number};
 }
@@ -307,7 +327,6 @@ export interface CoinflowNearPurchaseProps extends CoinflowCommonPurchaseProps {
 
 export interface CoinflowEvmPurchaseProps extends CoinflowCommonPurchaseProps {
   transaction?: EvmTransactionData;
-  token?: string;
   wallet: EthWallet;
 }
 
@@ -494,7 +513,7 @@ export interface CoinflowIFrameProps
       CoinflowCommonPurchaseProps,
       | 'chargebackProtectionData'
       | 'webhookInfo'
-      | 'amount'
+      | 'subtotal'
       | 'customerInfo'
       | 'settlementType'
       | 'email'
@@ -517,7 +536,7 @@ export interface CoinflowIFrameProps
     Pick<CoinflowEvmPurchaseProps, 'authOnly'>,
     Pick<
       CoinflowSolanaPurchaseProps,
-      'rent' | 'nativeSolToConvert' | 'token' | 'destinationAuthKey'
+      'rent' | 'nativeSolToConvert' | 'destinationAuthKey'
     > {
   walletPubkey: string | null | undefined;
   sessionKey?: string;
