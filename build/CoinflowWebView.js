@@ -40,9 +40,7 @@ export function CoinflowWebView(props) {
         return false;
     }, []);
     return useMemo(function () {
-        var enableApplePay = !props.disableApplePay &&
-            props.route.includes('/purchase/') &&
-            Platform.OS === 'ios';
+        var enableApplePay = props.route.includes('/purchase/') && Platform.OS === 'ios';
         return (React.createElement(WebView, { style: [
                 {
                     flex: 1,

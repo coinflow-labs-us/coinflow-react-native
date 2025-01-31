@@ -32,8 +32,7 @@ export type MerchantTheme = {
   style?: MerchantStyle;
 };
 
-export interface CustomerInfo {
-  name?: string;
+interface BaseCustomerInfo {
   verificationId?: string;
   displayName?: string;
   address?: string;
@@ -45,6 +44,26 @@ export interface CustomerInfo {
   lat?: string;
   lng?: string;
 }
+
+export interface NameCustomerInfo extends BaseCustomerInfo {
+  /**
+   * @hidden
+   */
+  name?: string;
+}
+
+export interface SplitNameCustomerInfo extends BaseCustomerInfo {
+  /**
+   * @minLength 1
+   */
+  firstName: string;
+  /**
+   * @minLength 1
+   */
+  lastName: string;
+}
+
+export type CustomerInfo = SplitNameCustomerInfo | NameCustomerInfo;
 
 /** Coinflow Types **/
 export type CoinflowBlockchain =
@@ -259,6 +278,18 @@ export enum ThreeDsChallengePreference {
   Challenge = 'Challenge',
 }
 
+export enum PaymentMethods {
+  card = 'card',
+  ach = 'ach',
+  fasterPayments = 'fasterPayments',
+  sepa = 'sepa',
+  pix = 'pix',
+  usdc = 'usdc',
+  googlePay = 'googlePay',
+  applePay = 'applePay',
+  credits = 'credits',
+}
+
 export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   subtotal?: Subtotal;
   onSuccess?: OnSuccessMethod;
@@ -269,8 +300,10 @@ export interface CoinflowCommonPurchaseProps extends CoinflowTypes {
   email?: string;
   chargebackProtectionData?: ChargebackProtectionData;
   planCode?: string;
-  disableApplePay?: boolean;
-  disableGooglePay?: boolean;
+  /**
+   * The payment methods displayed on the UI. If omitted, all available payment methods will be displayed.
+   */
+  allowedPaymentMethods?: PaymentMethods[];
   customerInfo?: CustomerInfo;
   settlementType?: SettlementType;
   authOnly?: boolean;
@@ -523,6 +556,7 @@ export interface CoinflowIFrameProps
       | 'origins'
       | 'threeDsChallengePreference'
       | 'supportEmail'
+      | 'allowedPaymentMethods'
     >,
     Pick<
       CoinflowCommonWithdrawProps,

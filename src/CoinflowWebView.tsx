@@ -76,9 +76,7 @@ export function CoinflowWebView(
 
   return useMemo(() => {
     const enableApplePay =
-      !props.disableApplePay &&
-      props.route.includes('/purchase/') &&
-      Platform.OS === 'ios';
+      props.route.includes('/purchase/') && Platform.OS === 'ios';
 
     return (
       <WebView
