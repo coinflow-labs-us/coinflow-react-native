@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import {
   CoinflowWebView,
   CoinflowWebViewProps,
+  useRandomHandleHeightChangeId,
   WithOnLoad,
   WithStyles,
 } from './CoinflowWebView';
@@ -15,6 +16,7 @@ import {
 export function CoinflowPurchaseHistory(
   props: CoinflowHistoryProps & WithStyles & WithOnLoad
 ) {
+  const handleHeightChangeId = useRandomHandleHeightChangeId();
   const webviewProps = useMemo<CoinflowWebViewProps>(() => {
     const walletPubkey = getWalletPubkey(props);
     return {
@@ -22,8 +24,9 @@ export function CoinflowPurchaseHistory(
       walletPubkey,
       route: `/history/purchase/${props.merchantId}`,
       onLoad: props.onLoad,
+      handleHeightChangeId,
     };
-  }, [props]);
+  }, [props, handleHeightChangeId]);
 
   const messageHandlers = useMemo<IFrameMessageHandlers>(() => {
     return {

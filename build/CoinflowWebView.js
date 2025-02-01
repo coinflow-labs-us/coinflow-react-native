@@ -2,6 +2,9 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import WebView from 'react-native-webview';
 import { Linking, Platform } from 'react-native';
 import { CoinflowUtils, handleIFrameMessage, } from './common';
+export function useRandomHandleHeightChangeId() {
+    return useMemo(function () { return Math.random().toString(16).substring(2); }, []);
+}
 export function CoinflowWebView(props) {
     var WebViewRef = useRef(null);
     var url = useMemo(function () {
@@ -14,7 +17,7 @@ export function CoinflowWebView(props) {
     }, [WebViewRef]);
     var handleIframeMessages = useCallback(function (_a) {
         var data = _a.data;
-        var promise = handleIFrameMessage(data, props);
+        var promise = handleIFrameMessage(data, props, props.handleHeightChangeId);
         if (!promise)
             return;
         promise.then(sendMessage).catch(function (e) { return sendMessage('ERROR ' + e.message); });

@@ -18,6 +18,10 @@ export type WithOnLoad = {
 export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> &
   WithOnLoad;
 
+export function useRandomHandleHeightChangeId() {
+  return useMemo(() => Math.random().toString(16).substring(2), []);
+}
+
 export function CoinflowWebView(
   props: CoinflowWebViewProps & WithStyles & IFrameMessageHandlers
 ) {
@@ -37,7 +41,11 @@ export function CoinflowWebView(
 
   const handleIframeMessages = useCallback(
     ({data}: {data: string}) => {
-      const promise = handleIFrameMessage(data, props);
+      const promise = handleIFrameMessage(
+        data,
+        props,
+        props.handleHeightChangeId
+      );
       if (!promise) return;
       promise.then(sendMessage).catch(e => sendMessage('ERROR ' + e.message));
     },
