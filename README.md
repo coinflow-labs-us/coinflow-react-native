@@ -63,6 +63,10 @@ Props:
 
 # Changelog
 
+## 4.0.5
+
+- Fixing `onAuthDeclined` callback
+
 ## 4.0.4
 
 - Added `seller` prop to `chargebackProtectionData`
