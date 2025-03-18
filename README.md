@@ -63,6 +63,10 @@ Props:
 
 # Changelog
 
+## 4.0.6
+
+- Improving Withdraw With Session Keys
+
 ## 4.0.5
 
 - Fixing `onAuthDeclined` callback
