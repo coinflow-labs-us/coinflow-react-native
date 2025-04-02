@@ -63,6 +63,10 @@ Props:
 
 # Changelog
 
+## 4.1.0
+
+- Added Multi-Currency Presentment via the `presentment` property
+
 ## 4.0.6
 
 - Improving Withdraw With Session Keys

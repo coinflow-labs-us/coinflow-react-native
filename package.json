@@ -1,6 +1,6 @@
 {
   "name": "@coinflowlabs/react-native",
-  "version": "4.0.6",
+  "version": "4.1.0",
   "description": "React Native Component for Coinflow",
   "main": "build/index.js",
   "types": "build/index.d.ts",
