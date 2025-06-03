@@ -8,10 +8,10 @@ import {
 } from './CoinflowWebView';
 import {
   CoinflowPurchaseProps,
-  getWalletPubkey,
-  getHandlers,
-  IFrameMessageHandlers,
   CoinflowUtils,
+  getHandlers,
+  getWalletPubkey,
+  IFrameMessageHandlers,
 } from './common';
 
 function useCoinflowPurchase(
@@ -48,5 +48,11 @@ export function CoinflowPurchase(
     purchaseProps,
     '-v2'
   );
-  return <CoinflowWebView {...webviewProps} {...messageHandlers} />;
+  return (
+    <CoinflowWebView
+      {...webviewProps}
+      {...messageHandlers}
+      waitForWebviewLoadedMessage
+    />
+  );
 }

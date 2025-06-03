@@ -7,6 +7,11 @@ export type WithStyles = {
 export type WithOnLoad = {
     onLoad?: () => void;
 };
-export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & WithOnLoad;
+export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> & WithOnLoad & {
+    /**
+     * If set, the webview will only render the content after the webview sends a "loaded" message
+     */
+    waitForWebviewLoadedMessage?: boolean;
+};
 export declare function useRandomHandleHeightChangeId(): string;
 export declare function CoinflowWebView(props: CoinflowWebViewProps & WithStyles & IFrameMessageHandlers): React.JSX.Element;

@@ -1,7 +1,7 @@
 import { __assign } from "tslib";
 import React, { useMemo } from 'react';
 import { CoinflowWebView, useRandomHandleHeightChangeId, } from './CoinflowWebView';
-import { getWalletPubkey, getHandlers, CoinflowUtils, } from './common';
+import { CoinflowUtils, getHandlers, getWalletPubkey, } from './common';
 function useCoinflowPurchase(purchaseProps, version) {
     var handleHeightChangeId = useRandomHandleHeightChangeId();
     var webviewProps = useMemo(function () {
@@ -15,6 +15,6 @@ function useCoinflowPurchase(purchaseProps, version) {
 }
 export function CoinflowPurchase(purchaseProps) {
     var _a = useCoinflowPurchase(purchaseProps, '-v2'), webviewProps = _a.webviewProps, messageHandlers = _a.messageHandlers;
-    return React.createElement(CoinflowWebView, __assign({}, webviewProps, messageHandlers));
+    return (React.createElement(CoinflowWebView, __assign({}, webviewProps, messageHandlers, { waitForWebviewLoadedMessage: true })));
 }
 //# sourceMappingURL=CoinflowPurchase.js.map
