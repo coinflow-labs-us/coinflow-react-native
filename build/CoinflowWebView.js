@@ -25,16 +25,16 @@ export function CoinflowWebView(props) {
         promise.then(sendMessage).catch(function (e) { return sendMessage('ERROR ' + e.message); });
     }, [props, sendMessage]);
     var style = props.style, onLoad = props.onLoad;
+    var onShouldStartLoadWithRequestOverride = props.onShouldStartLoadWithRequest;
     var onShouldStartLoadWithRequest = useCallback(function (request) {
         var whitelist = [
             'solscan',
             'etherscan',
-            'persona',
             'polyscan',
             'localhost:3000',
             'coinflow.cash',
         ];
-        var blacklist = ['pay.google.com', 'tokenex.com', 'api'];
+        var blacklist = ['pay.google.com', 'tokenex.com', 'api', 'persona'];
         var shouldRedirect = (request.url.includes('https') || request.url.includes('http')) &&
             whitelist.some(function (item) { return request.url.includes(item); }) &&
             !blacklist.some(function (item) { return request.url.includes(item); });
@@ -88,7 +88,7 @@ export function CoinflowWebView(props) {
                         flex: 1,
                     },
                     style,
-                ], webviewDebuggingEnabled: true, originWhitelist: ['*'], enableApplePay: enableApplePay, keyboardDisplayRequiresUserAction: false, showsVerticalScrollIndicator: false, onShouldStartLoadWithRequest: onShouldStartLoadWithRequest, ref: WebViewRef, source: { uri: url }, onMessage: handleMessage, onError: handleError, onLoad: handleLoad })));
+                ], webviewDebuggingEnabled: true, originWhitelist: ['*'], enableApplePay: enableApplePay, keyboardDisplayRequiresUserAction: false, showsVerticalScrollIndicator: false, onShouldStartLoadWithRequest: onShouldStartLoadWithRequestOverride !== null && onShouldStartLoadWithRequestOverride !== void 0 ? onShouldStartLoadWithRequestOverride : onShouldStartLoadWithRequest, ref: WebViewRef, source: { uri: url }, onMessage: handleMessage, onError: handleError, onLoad: handleLoad })));
     }, [url, isLoading]);
 }
 //# sourceMappingURL=CoinflowWebView.js.map

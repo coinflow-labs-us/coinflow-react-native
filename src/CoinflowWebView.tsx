@@ -17,6 +17,12 @@ export type WithStyles = {style?: StyleProp<ViewStyle>};
 
 export type WithOnLoad = {
   onLoad?: () => void;
+  /**
+   * Override the onShouldStartLoadWithRequest with your own function
+   *
+   * Function that allows custom handling of any web view requests. Return true from the function to continue loading the request and false to stop loading.
+   */
+  onShouldStartLoadWithRequest?: (request: ShouldStartLoadRequest) => boolean;
 };
 
 export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> &
@@ -64,18 +70,19 @@ export function CoinflowWebView(
 
   const {style, onLoad} = props;
 
+  const onShouldStartLoadWithRequestOverride =
+    props.onShouldStartLoadWithRequest;
   const onShouldStartLoadWithRequest = useCallback(
     (request: ShouldStartLoadRequest) => {
       const whitelist = [
         'solscan',
         'etherscan',
-        'persona',
         'polyscan',
         'localhost:3000',
         'coinflow.cash',
       ];
 
-      const blacklist = ['pay.google.com', 'tokenex.com', 'api'];
+      const blacklist = ['pay.google.com', 'tokenex.com', 'api', 'persona'];
 
       const shouldRedirect =
         (request.url.includes('https') || request.url.includes('http')) &&
@@ -156,7 +163,9 @@ export function CoinflowWebView(
           enableApplePay={enableApplePay}
           keyboardDisplayRequiresUserAction={false}
           showsVerticalScrollIndicator={false}
-          onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+          onShouldStartLoadWithRequest={
+            onShouldStartLoadWithRequestOverride ?? onShouldStartLoadWithRequest
+          }
           ref={WebViewRef}
           source={{uri: url}}
           onMessage={handleMessage}
