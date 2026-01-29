@@ -60,8 +60,50 @@ Props:
 - `nativeSolToConvert` (optional, Solana only): Specify the amount of native SOL to convert wSOL for the purchase
 - `jwtToken` (optional): A JWT token which encodes verified checkout parameters to prevent spoofing of arguments.
 - `supportEmail` (optional): Your business support email address to use for support inquiries
+- `zeroAuthorization` (optional): Pass in true if you wish to perform a zero authorization card transaction
 
 # Changelog
+
+## 4.6.0 
+
+- New Blockchain Support: The SDK now supports Monad, a high-performance EVM-compatible blockchain. Pass blockchain='monad' to enable Monad payment processing.
+
+## 4.5.2
+
+- [Bug Fix] Fixes an issue on some earlier versions of expo: `Requiring unknown module "undefined".` 
+
+## 4.5.1
+
+- Improve the logic to handle linking users out to the browser so that it is future proofed and consistent in the future.
+- Internal change to a query parameter name for zero authorization
+
+## 4.5.0
+
+- Added zeroAuthorization parameter to allow zero authorization card transactions
+
+## 4.4.2
+
+- Added email as a field for customerInfo
+
+## 4.4.1
+
+- Added `redemptionCheck` to purchase (Solana only)
+
+## 4.4.0
+
+- Added `allowedWithdrawSpeeds` query parameter to allow merchants to specify what withdraw speeds are allowed. The default is all.
+
+## 4.3.1
+
+- Added more `chargebackProtectionData` product types
+
+## 4.3.0
+
+- Added `partialUsdcChecked` property to pre-check partial USDC payment checkbox
+
+## 4.1.6
+
+- Support wallet connect deep links
 
 ## 4.1.0
 

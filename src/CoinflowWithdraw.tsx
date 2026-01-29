@@ -26,7 +26,7 @@ export function CoinflowWithdraw(
       onLoad: withdrawProps.onLoad,
       handleHeightChangeId,
     };
-  }, [withdrawProps, handleHeightChangeId, withdrawProps]);
+  }, [withdrawProps, handleHeightChangeId]);
 
   const messageHandlers = useMemo<IFrameMessageHandlers>(() => {
     return {

@@ -26,7 +26,7 @@ export function CoinflowWithdrawHistory(
       onLoad: props.onLoad,
       handleHeightChangeId,
     };
-  }, [props]);
+  }, [props, handleHeightChangeId]);
 
   const messageHandlers = useMemo<IFrameMessageHandlers>(() => {
     return {

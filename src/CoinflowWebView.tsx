@@ -11,6 +11,7 @@ import {
   CoinflowUtils,
   handleIFrameMessage,
   IFrameMessageHandlers,
+  RN_REDIRECT_MESSAGE_NAME,
 } from './common';
 
 export type WithStyles = {style?: StyleProp<ViewStyle>};
@@ -44,7 +45,10 @@ export function CoinflowWebView(
   const [isLoading, setIsLoading] = useState(true);
 
   const url = useMemo(() => {
-    return CoinflowUtils.getCoinflowUrl(props);
+    return CoinflowUtils.getCoinflowUrl({
+      ...props,
+      baseUrl: CoinflowUtils.getCoinflowAppBaseUrl(props.env),
+    });
   }, [props]);
 
   const sendMessage = useCallback(
@@ -73,28 +77,8 @@ export function CoinflowWebView(
   const onShouldStartLoadWithRequestOverride =
     props.onShouldStartLoadWithRequest;
   const onShouldStartLoadWithRequest = useCallback(
-    (request: ShouldStartLoadRequest) => {
-      const whitelist = [
-        'solscan',
-        'etherscan',
-        'polyscan',
-        'localhost:3000',
-        'coinflow.cash',
-      ];
-
-      const blacklist = ['pay.google.com', 'tokenex.com', 'api', 'persona'];
-
-      const shouldRedirect =
-        (request.url.includes('https') || request.url.includes('http')) &&
-        whitelist.some(item => request.url.includes(item)) &&
-        !blacklist.some(item => request.url.includes(item));
-
-      const isCurrentUrl = request.url.split('?')[0] === url.split('?')[0];
-
-      if (!shouldRedirect || isCurrentUrl) return true;
-
-      Linking.openURL(request.url).catch();
-      return false;
+    (_request: ShouldStartLoadRequest) => {
+      return true;
     },
     []
   );
@@ -103,34 +87,53 @@ export function CoinflowWebView(
     setIsLoading(false);
   };
 
-  const handleLoad = () => {
+  const handleLoad = useCallback(() => {
     // if we we only listen to a certain message, we shouldn't use onLoad to stop the loading, as the message they are listening for might not be sent yet
     if (props.waitForWebviewLoadedMessage) return;
 
     setIsLoading(false);
     onLoad?.();
-  };
+  }, [props.waitForWebviewLoadedMessage, onLoad]);
 
-  const handleMessage = (event: WebViewMessageEvent) => {
-    const {data} = event.nativeEvent;
-    handleIframeMessages({data});
+  const handleMessage = useCallback(
+    (event: WebViewMessageEvent) => {
+      const {data} = event.nativeEvent;
 
-    if (props.waitForWebviewLoadedMessage) {
-      try {
-        const message = JSON.parse(data);
-        if (
-          message &&
-          typeof message === 'object' &&
-          message.method === 'loaded'
-        ) {
-          setIsLoading(false);
-          onLoad?.();
+      if (typeof data === 'string') {
+        try {
+          const parsed = JSON.parse(data);
+          if (
+            parsed.method === RN_REDIRECT_MESSAGE_NAME &&
+            parsed.info?.callbackUrl
+          ) {
+            Linking.openURL(parsed.info?.callbackUrl).catch();
+            return;
+          }
+        } catch {
+          // Not JSON, continue...
         }
-      } catch (error) {
-        console.error('Failed to parse message:', error);
       }
-    }
-  };
+
+      handleIframeMessages({data});
+
+      if (props.waitForWebviewLoadedMessage) {
+        try {
+          const message = JSON.parse(data);
+          if (
+            message &&
+            typeof message === 'object' &&
+            message.method === 'loaded'
+          ) {
+            setIsLoading(false);
+            onLoad?.();
+          }
+        } catch (error) {
+          console.error('Failed to parse message:', error);
+        }
+      }
+    },
+    [onLoad, props.waitForWebviewLoadedMessage, handleIframeMessages]
+  );
 
   return useMemo(() => {
     const enableApplePay =
@@ -174,5 +177,15 @@ export function CoinflowWebView(
         />
       </View>
     );
-  }, [url, isLoading]);
+  }, [
+    url,
+    isLoading,
+    props.loaderBackground,
+    onShouldStartLoadWithRequest,
+    handleMessage,
+    handleLoad,
+    onShouldStartLoadWithRequestOverride,
+    props.route,
+    style,
+  ]);
 }
