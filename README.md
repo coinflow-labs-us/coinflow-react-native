@@ -64,6 +64,10 @@ Props:
 
 # Changelog
 
+## 4.7.0
+
+- Added zeroAuthorizationConfig prop to CoinflowPurchase for controlling zero authorization behavior (show/hide saved payment methods, verify a specific card by token). Deprecates isZeroAuthorization boolean prop.
+
 ## 4.6.0 
 
 - New Blockchain Support: The SDK now supports Monad, a high-performance EVM-compatible blockchain. Pass blockchain='monad' to enable Monad payment processing.
