@@ -64,6 +64,10 @@ Props:
 
 # Changelog
 
+## 4.8.0
+
+- New Blockchain Support: The SDK now supports Stellar, a fast and low-cost blockchain for payments. Pass blockchain='stellar' to enable Stellar payment processing.
+
 ## 4.7.0
 
 - Added zeroAuthorizationConfig prop to CoinflowPurchase for controlling zero authorization behavior (show/hide saved payment methods, verify a specific card by token). Deprecates isZeroAuthorization boolean prop.
