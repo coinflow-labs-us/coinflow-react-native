@@ -64,6 +64,10 @@ Props:
 
 # Changelog
 
+## 4.9.2
+
+- Fixed typing for sessionKey being not present when passing the wallet object
+
 ## 4.9.1
 
 - Added support for overriding the default account type (from merchant settings) used for chargeback protection via `chargebackProtectionAccountType` in the URL parameters.
