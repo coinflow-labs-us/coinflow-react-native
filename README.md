@@ -64,6 +64,11 @@ Props:
 
 # Changelog
 
+## 4.12.0
+
+- New `CoinflowCardForm`, `CoinflowCardNumberForm`, and `CoinflowCvvForm` components — simple card inputs with a single `tokenize()` call and theme support
+- Added theme options for `fontSize` and placeholder text
+
 ## 4.11.0
 
 - Added unified protection initialization helper and headers helper

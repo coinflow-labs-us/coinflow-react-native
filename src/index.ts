@@ -4,6 +4,7 @@ export * from './CoinflowWithdraw';
 export * from './CoinflowPurchase';
 export * from './CoinflowPurchaseHistory';
 export * from './CoinflowWithdrawHistory';
+export * from './CoinflowCardFormV2';
 export * from './CoinflowPurchaseProtection';
 export * from './useCoinflowProtectionHeaders';
 export * from './common';
