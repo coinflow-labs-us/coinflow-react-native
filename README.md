@@ -73,6 +73,10 @@ Props:
 
 # Changelog
 
+## 4.13.0
+
+- Added `userLocation` property to `CoinflowPurchase` and `CoinflowWithdraw` for merchants who choose to use Geolocation checks
+
 ## 4.12.0
 
 - New `CoinflowCardForm`, `CoinflowCardNumberForm`, and `CoinflowCvvForm` components — simple card inputs with a single `tokenize()` call and theme support

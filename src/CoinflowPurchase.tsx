@@ -12,10 +12,11 @@ import {
   getHandlers,
   getWalletPubkey,
   IFrameMessageHandlers,
+  WithGeo,
 } from './common';
 
 function useCoinflowPurchase(
-  purchaseProps: CoinflowPurchaseProps & WithStyles & WithOnLoad,
+  purchaseProps: CoinflowPurchaseProps & WithStyles & WithOnLoad & WithGeo,
   version: string
 ) {
   const handleHeightChangeId = useRandomHandleHeightChangeId();
@@ -42,7 +43,7 @@ function useCoinflowPurchase(
 }
 
 export function CoinflowPurchase(
-  purchaseProps: CoinflowPurchaseProps & WithStyles & WithOnLoad
+  purchaseProps: CoinflowPurchaseProps & WithStyles & WithOnLoad & WithGeo
 ) {
   const {webviewProps, messageHandlers} = useCoinflowPurchase(
     purchaseProps,

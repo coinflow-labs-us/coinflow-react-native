@@ -11,10 +11,11 @@ import {
   getHandlers,
   IFrameMessageHandlers,
   CoinflowWithdrawProps,
+  WithGeo,
 } from './common';
 
 export function CoinflowWithdraw(
-  withdrawProps: CoinflowWithdrawProps & WithStyles & WithOnLoad
+  withdrawProps: CoinflowWithdrawProps & WithStyles & WithOnLoad & WithGeo
 ) {
   const handleHeightChangeId = useRandomHandleHeightChangeId();
   const webviewProps = useMemo<CoinflowWebViewProps>(() => {
