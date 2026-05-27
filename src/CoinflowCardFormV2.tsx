@@ -50,6 +50,7 @@ function useCardFormWebView({
 }: CardFormBaseProps & {variant: CardFormVariant; token?: string}) {
   const webViewRef = useRef<WebView>(null);
   const [loaded, setLoaded] = useState(false);
+  const [iframeHeight, setIframeHeight] = useState<number | null>(null);
   const tokenizeResolveRef = useRef<{
     resolve: (value: CardFormTokenResponse) => void;
     reject: (reason: Error) => void;
@@ -59,6 +60,7 @@ function useCardFormWebView({
     const baseUrl = CoinflowUtils.getCoinflowBaseUrl(env);
     const iframeUrl = new URL(`/form/v2/${variant}`, baseUrl);
     iframeUrl.searchParams.append('merchantId', merchantId);
+    iframeUrl.searchParams.append('useHeightChange', 'true');
     if (theme) {
       iframeUrl.searchParams.append(
         'theme',
@@ -79,6 +81,12 @@ function useCardFormWebView({
         if (parsed.method === 'loaded') {
           setLoaded(true);
           onLoad?.();
+        }
+        if (parsed.method === 'heightChange') {
+          const parsedHeight = Number(parsed.data);
+          if (Number.isFinite(parsedHeight) && parsedHeight > 0) {
+            setIframeHeight(parsedHeight);
+          }
         }
         if (parsed.method === 'tokenize' && tokenizeResolveRef.current) {
           const {resolve, reject} = tokenizeResolveRef.current;
@@ -116,24 +124,25 @@ function useCardFormWebView({
     });
   }, []);
 
-  return {webViewRef, url, loaded, handleMessage, tokenize};
+  return {webViewRef, url, loaded, handleMessage, tokenize, iframeHeight};
 }
 
 const CardFormWebViewComponent = forwardRef<
   CardFormNativeRef,
   CardFormBaseProps & {variant: CardFormVariant; token?: string}
 >(({variant, style, ...props}, ref) => {
-  const {webViewRef, url, loaded, handleMessage, tokenize} = useCardFormWebView(
-    {
+  const {webViewRef, url, loaded, handleMessage, tokenize, iframeHeight} =
+    useCardFormWebView({
       ...props,
       variant,
-    }
-  );
+    });
 
   useImperativeHandle(ref, () => ({tokenize}), [tokenize]);
 
   return (
-    <View style={[{height: 52, opacity: loaded ? 1 : 0}, style]}>
+    <View
+      style={[{height: iframeHeight ?? 52, opacity: loaded ? 1 : 0}, style]}
+    >
       <WebView
         ref={webViewRef}
         source={{uri: url}}
