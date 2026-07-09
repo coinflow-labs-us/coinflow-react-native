@@ -73,6 +73,13 @@ Props:
 
 # Changelog
 
+## 4.17.0
+
+- New `CoinflowPayPalButton` component — a standalone PayPal button that renders only the hosted PayPal button (not the full checkout) in a WebView
+- Accepts a PayPal `email`, `phoneNumber`, or saved `token` to create the order; the identifier updates live without reloading the button
+- Added `onApprove` (`{paymentId}` on completion) and `onError` callbacks; the button is always tappable and surfaces a clear error when no identifier is provided
+- Added `overlayInsets` (`{top?, bottom?}`) so the PayPal approval overlay fills only the content region (top safe area down to the tab bar) and keeps the button anchored in place while open
+
 ## 4.15.0
 
 - Added `cardBackground` to `MerchantTheme` to control the inner card-entry surface independently of the outer canvas `background`

@@ -5,6 +5,7 @@ export * from './CoinflowPurchase';
 export * from './CoinflowPurchaseHistory';
 export * from './CoinflowWithdrawHistory';
 export * from './CoinflowCardFormV2';
+export * from './CoinflowPayPalButton';
 export * from './CoinflowPurchaseProtection';
 export * from './useCoinflowProtectionHeaders';
 export * from './common';
