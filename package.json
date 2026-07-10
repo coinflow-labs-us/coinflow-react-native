@@ -1,6 +1,6 @@
 {
   "name": "@coinflowlabs/react-native",
-  "version": "4.17.0",
+  "version": "4.18.0",
   "description": "React Native Component for Coinflow",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -22,8 +22,9 @@
   ],
   "scripts": {
     "clean": "rimraf build && rimraf ./src/common && rimraf tsconfig.tsbuildinfo",
-    "build": "npm run clean && npm run codegen && tsc",
-    "codegen": "cp -r '../../packages/lib-common/src/.' './src/common/'"
+    "build": "npm run clean && npm run codegen && tsc && npm run copy:assets",
+    "codegen": "cp -r '../../packages/lib-common/src/.' './src/common/'",
+    "copy:assets": "cp -r './src/assets' './build/assets'"
   },
   "peerDependencies": {
     "bs58": ">=5.0.0",

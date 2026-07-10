@@ -1,14 +1,5 @@
 # Coinflow React Native
 
-## Changelog
-
-### 4.12.0
-
-- New `CoinflowCardForm`, `CoinflowCardNumberForm`, and `CoinflowCvvForm` components — simple card inputs with a single `tokenize()` call and full theme support
-- Theme options: `font`, `fontSize`, `background`, `textColor`, `showCardIcon`, `cardNumberPlaceholder`, `cvvPlaceholder`, `expirationPlaceholder`
-- `showCardIcon`: display the detected card brand (Visa, Mastercard, etc.) inline with the card number input
-- Improved security for iframe communication
-
 ## Withdraw Usage
 
 ```
@@ -72,6 +63,13 @@ Props:
 - `zeroAuthorization` (optional): Pass in true if you wish to perform a zero authorization card transaction
 
 # Changelog
+
+## 4.18.0
+
+### New `CoinflowApplePayButton` component
+#### A standalone Apple Pay button that renders only the hosted Apple Pay button (not the full checkout) in a WebView.
+- Accepts `color` (`white` | `black`) plus `onApprove` (`{paymentId}` on completion), `onError`, and `onLoad` callbacks
+- Note: Apple Pay only works on a real iOS device — it will not run in the simulator
 
 ## 4.17.0
 
