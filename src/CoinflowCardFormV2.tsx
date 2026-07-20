@@ -1,16 +1,22 @@
 import React, {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import {StyleProp, View, ViewStyle} from 'react-native';
+import {Animated, Easing, StyleProp, View, ViewStyle} from 'react-native';
 import WebView from 'react-native-webview';
 import {WebViewMessageEvent} from 'react-native-webview/lib/WebViewTypes';
 import LZString from 'lz-string';
-import {CoinflowEnvs, CoinflowUtils, MerchantTheme} from './common';
+import {
+  CoinflowEnvs,
+  CoinflowUtils,
+  INLINE_SKELETON_HEIGHT_PX,
+  MerchantTheme,
+} from './common';
 
 type CardFormVariant = 'card-form' | 'card-number-form' | 'cvv-form';
 
@@ -143,20 +149,77 @@ const CardFormWebViewComponent = forwardRef<
 
   return (
     <View
-      style={[{height: iframeHeight ?? 52, opacity: loaded ? 1 : 0}, style]}
+      style={[
+        {
+          height: iframeHeight ?? INLINE_SKELETON_HEIGHT_PX,
+          position: 'relative',
+        },
+        style,
+      ]}
     >
-      <WebView
-        ref={webViewRef}
-        source={{uri: url}}
-        onMessage={handleMessage}
-        style={{flex: 1}}
-        originWhitelist={['*']}
-        keyboardDisplayRequiresUserAction={false}
-        showsVerticalScrollIndicator={false}
-      />
+      {!loaded && <CardFormSkeleton />}
+      <View style={{flex: 1, opacity: loaded ? 1 : 0}}>
+        <WebView
+          ref={webViewRef}
+          source={{uri: url}}
+          onMessage={handleMessage}
+          style={{flex: 1}}
+          originWhitelist={['*']}
+          keyboardDisplayRequiresUserAction={false}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 });
+
+function CardFormSkeleton() {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 1500,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [animatedValue]);
+
+  const opacity = animatedValue.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [1, 0.4, 1],
+  });
+
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderRadius: 8,
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+        justifyContent: 'center',
+        paddingHorizontal: 12,
+        opacity,
+      }}
+    >
+      <View
+        style={{
+          width: '60%',
+          height: 10,
+          borderRadius: 4,
+          backgroundColor: 'rgba(0, 0, 0, 0.12)',
+        }}
+      />
+    </Animated.View>
+  );
+}
 
 export const CoinflowCardForm = forwardRef<
   CardFormNativeRef,

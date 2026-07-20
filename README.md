@@ -64,6 +64,10 @@ Props:
 
 # Changelog
 
+## 4.20.0
+
+- Added loading states to the `CoinflowCardForm`, `CoinflowCardNumberInput`, `CoinflowCvvOnlyInput` components
+
 ## 4.18.0
 
 ### New `CoinflowApplePayButton` component
