@@ -3,8 +3,10 @@ import {
   CoinflowWebView,
   CoinflowWebViewProps,
   useRandomHandleHeightChangeId,
+  WithBrowserRedirect,
   WithOnLoad,
   WithStyles,
+  WithVenmoFlow,
 } from './CoinflowWebView';
 import {
   CoinflowPurchaseProps,
@@ -16,7 +18,12 @@ import {
 } from './common';
 
 function useCoinflowPurchase(
-  purchaseProps: CoinflowPurchaseProps & WithStyles & WithOnLoad & WithGeo,
+  purchaseProps: CoinflowPurchaseProps &
+    WithStyles &
+    WithOnLoad &
+    WithGeo &
+    WithBrowserRedirect &
+    WithVenmoFlow,
   version: string
 ) {
   const handleHeightChangeId = useRandomHandleHeightChangeId();
@@ -43,7 +50,12 @@ function useCoinflowPurchase(
 }
 
 export function CoinflowPurchase(
-  purchaseProps: CoinflowPurchaseProps & WithStyles & WithOnLoad & WithGeo
+  purchaseProps: CoinflowPurchaseProps &
+    WithStyles &
+    WithOnLoad &
+    WithGeo &
+    WithBrowserRedirect &
+    WithVenmoFlow
 ) {
   const {webviewProps, messageHandlers} = useCoinflowPurchase(
     purchaseProps,

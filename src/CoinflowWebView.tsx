@@ -26,13 +26,81 @@ export type WithOnLoad = {
   onShouldStartLoadWithRequest?: (request: ShouldStartLoadRequest) => boolean;
 };
 
+/**
+ * How Venmo checkouts hand off to a browser. The two variants encode the two
+ * valid host/presentation pairings — they are not independently mixable:
+ * - 'venmo-app': system Safari + popup presentation. The customer switches
+ *   into the native Venmo app; the continue page shows a return-to-app link.
+ *   Works with no extra dependencies (default).
+ * - 'in-app-browser': merchant-supplied in-app browser (SFSafariViewController
+ *   / Custom Tabs) + modal presentation. The whole checkout stays in the
+ *   sheet; provide closeBrowser so the SDK can dismiss it automatically when
+ *   the payment completes.
+ */
+export type VenmoFlow =
+  | {type: 'venmo-app'}
+  | {
+      type: 'in-app-browser';
+      openBrowser: (url: string) => Promise<unknown>;
+      closeBrowser?: () => void;
+    };
+
+export type WithVenmoFlow = {
+  venmoFlow?: VenmoFlow;
+};
+
+export type WithBrowserRedirect = {
+  /**
+   * Called when the checkout needs to hand off to the system browser (e.g.
+   * Venmo checkouts, which cannot complete inside an embedded webview).
+   *
+   * Defaults to `Linking.openURL` (full browser app). Provide this to open
+   * the URL in an in-app browser instead, e.g. SFSafariViewController via
+   * expo-web-browser's `openBrowserAsync` or
+   * react-native-inappbrowser-reborn.
+   */
+  handleBrowserRedirect?: (url: string) => void | Promise<unknown>;
+};
+
 export type CoinflowWebViewProps = Omit<CoinflowIFrameProps, 'IFrameRef'> &
-  WithOnLoad & {
+  WithOnLoad &
+  WithBrowserRedirect &
+  WithVenmoFlow & {
     /**
      * If set, the webview will only render the content after the webview sends a "loaded" message
      */
     waitForWebviewLoadedMessage?: boolean;
   };
+
+/**
+ * Applies the Venmo host/presentation pairing: the flow type decides both
+ * where the continue page opens and which SDK presentation it requests, so
+ * mismatched combinations are unrepresentable.
+ */
+function handleVenmoRedirect({
+  callbackUrl,
+  venmoFlow,
+}: {
+  callbackUrl: string;
+  venmoFlow?: VenmoFlow;
+}) {
+  if (venmoFlow?.type === 'in-app-browser') {
+    Promise.resolve(
+      venmoFlow.openBrowser(`${callbackUrl}&presentation=modal`)
+    ).catch(() => openVenmoAppFlow(callbackUrl));
+    return;
+  }
+  openVenmoAppFlow(callbackUrl);
+}
+
+function openVenmoAppFlow(callbackUrl: string) {
+  Linking.openURL(`${callbackUrl}&presentation=popup&display=browser`).catch(
+    () => {
+      // Terminal fallback for the Venmo handoff: nothing left to try. The
+      // checkout page's status polling will surface the eventual timeout.
+    }
+  );
+}
 
 export function useRandomHandleHeightChangeId() {
   return useMemo(() => Math.random().toString(16).substring(2), []);
@@ -72,7 +140,7 @@ export function CoinflowWebView(
     [props, sendMessage]
   );
 
-  const {style, onLoad} = props;
+  const {style, onLoad, venmoFlow, handleBrowserRedirect} = props;
 
   const onShouldStartLoadWithRequestOverride =
     props.onShouldStartLoadWithRequest;
@@ -106,8 +174,31 @@ export function CoinflowWebView(
             parsed.method === RN_REDIRECT_MESSAGE_NAME &&
             parsed.info?.callbackUrl
           ) {
-            Linking.openURL(parsed.info?.callbackUrl).catch();
+            const callbackUrl = parsed.info.callbackUrl;
+            if (parsed.info?.flow === 'venmo') {
+              handleVenmoRedirect({callbackUrl, venmoFlow});
+              return;
+            }
+            if (handleBrowserRedirect) {
+              Promise.resolve(handleBrowserRedirect(callbackUrl)).catch(() =>
+                Linking.openURL(callbackUrl).catch(() => {})
+              );
+            } else {
+              Linking.openURL(callbackUrl).catch(() => {});
+            }
             return;
+          }
+          // Auto-dismiss the Venmo in-app browser once the checkout reports
+          // success — the sheet's job is done and the app should be in view.
+          if (
+            parsed.method === 'success' &&
+            venmoFlow?.type === 'in-app-browser'
+          ) {
+            try {
+              venmoFlow.closeBrowser?.();
+            } catch {
+              // Nothing to dismiss — the sheet may already be closed.
+            }
           }
         } catch {
           // Not JSON, continue...
@@ -132,7 +223,13 @@ export function CoinflowWebView(
         }
       }
     },
-    [onLoad, props.waitForWebviewLoadedMessage, handleIframeMessages]
+    [
+      onLoad,
+      props.waitForWebviewLoadedMessage,
+      handleBrowserRedirect,
+      venmoFlow,
+      handleIframeMessages,
+    ]
   );
 
   return useMemo(() => {
@@ -161,7 +258,7 @@ export function CoinflowWebView(
             },
             style,
           ]}
-          webviewDebuggingEnabled={true}
+          webviewDebuggingEnabled={__DEV__}
           originWhitelist={['*']}
           enableApplePay={enableApplePay}
           keyboardDisplayRequiresUserAction={false}
