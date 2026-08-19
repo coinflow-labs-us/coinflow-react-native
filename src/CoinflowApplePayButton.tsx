@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import WebView from 'react-native-webview';
 import ApplePayLogoBlack from './assets/ApplePayBlack.png';
@@ -15,6 +15,7 @@ import {
   getWalletPubkey,
   handleIFrameMessage,
   IFrameMessageHandlers,
+  IFrameMessageMethods,
   WithGeo,
 } from './common';
 
@@ -30,6 +31,13 @@ export type CoinflowApplePayButtonProps = CoinflowPurchaseProps &
     /** Called once the button has loaded. */
     onLoad?: () => void;
   };
+
+/** Solid loading shades of the two button colors: lighter for black, dimmed
+ * for white (white cannot get lighter). */
+const LOADING_OVERLAY_COLORS: Record<'white' | 'black', string> = {
+  black: '#2E2E2E',
+  white: '#F0F0F0',
+};
 
 /**
  * Standalone Apple Pay button for the React Native SDK.
@@ -48,25 +56,74 @@ export function CoinflowApplePayButton(props: CoinflowApplePayButtonProps) {
   const webViewRef = useRef<WebView>(null);
   const handleHeightChangeId = useRandomHandleHeightChangeId();
   const loadedRef = useRef(false);
+  const [loaded, setLoaded] = useState(false);
+
+  // The subtotal is pinned to its initial value in the WebView URL so that
+  // amount changes don't change the URL and force a reload.
+  //
+  // Updates cannot be posted to this WebView directly: iOS disables the Apple
+  // Pay JS API in WKWebViews that inject scripts, so react-native-webview
+  // drops all JS injection (including ref.postMessage) when `enableApplePay`
+  // is set. Instead, updates are posted to a hidden same-origin bridge
+  // WebView (without Apple Pay), which relays them to the Apple Pay page
+  // through localStorage — shared between the two WebViews because they are
+  // same-origin and use the default shared process pool. Do NOT set
+  // `useSharedProcessPool={false}` on either WebView.
+  const [initialSubtotal] = useState(props.subtotal);
+  const lastSentSubtotalRef = useRef(JSON.stringify(initialSubtotal));
+  const bridgeWebViewRef = useRef<WebView>(null);
+  const [bridgeLoaded, setBridgeLoaded] = useState(false);
+  const bridgeId = useMemo(() => Math.random().toString(16).substring(2), []);
 
   const url = useMemo(() => {
     const walletPubkey = getWalletPubkey(props);
     return CoinflowUtils.getCoinflowUrl({
       ...props,
+      subtotal: initialSubtotal,
       walletPubkey,
       transaction: undefined,
       routePrefix: 'form',
       route: `/apple-pay/${props.merchantId}`,
       handleHeightChangeId,
+      bridgeId,
       baseUrl: CoinflowUtils.getCoinflowBaseUrl(props.env),
     });
-  }, [props, handleHeightChangeId]);
+  }, [props, handleHeightChangeId, initialSubtotal, bridgeId]);
 
   const source = useMemo(() => ({uri: url}), [url]);
+
+  const bridgeSource = useMemo(
+    () => ({
+      uri: `${CoinflowUtils.getCoinflowBaseUrl(props.env)}/rn-bridge?bridgeId=${bridgeId}`,
+    }),
+    [props.env, bridgeId]
+  );
 
   const sendMessage = useCallback((message: string) => {
     webViewRef.current?.postMessage(message);
   }, []);
+
+  const handleBridgeMessage = useCallback((event: WebViewMessageEvent) => {
+    try {
+      const parsed = JSON.parse(event.nativeEvent.data);
+      if (parsed.method === 'loaded') setBridgeLoaded(true);
+    } catch {
+      // Ignore non-JSON messages.
+    }
+  }, []);
+
+  const {subtotal} = props;
+  useEffect(() => {
+    if (!bridgeLoaded || !subtotal) return;
+
+    const serializedSubtotal = JSON.stringify(subtotal);
+    if (lastSentSubtotalRef.current === serializedSubtotal) return;
+
+    lastSentSubtotalRef.current = serializedSubtotal;
+    bridgeWebViewRef.current?.postMessage(
+      `${IFrameMessageMethods.UpdateSubtotal}:${serializedSubtotal}`
+    );
+  }, [bridgeLoaded, subtotal]);
 
   const messageHandlers = useMemo<IFrameMessageHandlers>(
     () => ({
@@ -87,6 +144,7 @@ export function CoinflowApplePayButton(props: CoinflowApplePayButtonProps) {
         const parsed = JSON.parse(data);
         if (parsed.method === 'loaded' && !loadedRef.current) {
           loadedRef.current = true;
+          setLoaded(true);
           onLoad?.();
         }
         if (typeof parsed.data === 'string' && parsed.data.startsWith('ERROR'))
@@ -114,7 +172,10 @@ export function CoinflowApplePayButton(props: CoinflowApplePayButtonProps) {
     <View style={[styles.container, style]}>
       <View
         pointerEvents="none"
-        style={[styles.overlay, {backgroundColor: color}]}
+        style={[
+          styles.overlay,
+          {backgroundColor: loaded ? color : LOADING_OVERLAY_COLORS[color]},
+        ]}
       >
         <AppleButtonOverlayLogo color={color} />
       </View>
@@ -130,6 +191,17 @@ export function CoinflowApplePayButton(props: CoinflowApplePayButtonProps) {
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         source={source}
         onMessage={handleMessage}
+      />
+      <WebView
+        ref={bridgeWebViewRef}
+        // react-native-webview wraps the webview in a {flex: 1} container;
+        // the size must be constrained on that wrapper (containerStyle) or
+        // the bridge steals flex space from the visible WebView above.
+        containerStyle={styles.bridgeWebView}
+        pointerEvents="none"
+        originWhitelist={['*']}
+        source={bridgeSource}
+        onMessage={handleBridgeMessage}
       />
     </View>
   );
@@ -151,6 +223,13 @@ const styles = StyleSheet.create({
   webView: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  // Kept 1x1 rather than 0x0 so WebKit does not suspend the page.
+  bridgeWebView: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    opacity: 0,
   },
   overlay: {
     position: 'absolute',

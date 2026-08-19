@@ -1,6 +1,6 @@
 {
   "name": "@coinflowlabs/react-native",
-  "version": "4.20.1",
+  "version": "4.21.0",
   "description": "React Native Component for Coinflow",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -31,19 +31,17 @@
     "react": ">=16",
     "react-native": ">=0.66.0",
     "react-native-webview": ">=11.16.0",
+    "@solana/web3.js": "^1.95.4",
     "@coinflowlabs/lib-common": "*"
   },
   "dependencies": {
-    "react-native-get-random-values": "^1.11.0",
     "bs58": "^6.0.0",
     "bn.js": "^5.2.2",
-    "@solana/web3.js": "^1.95.4",
     "lz-string": "^1.5.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.1",
     "typescript": "^5.6.3",
-    "@solana/wallet-adapter-react": "^0.15.32",
     "csstype": "^3.2.2"
   },
   "peerDependenciesMeta": {
