@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Linking, Platform, StyleProp, View, ViewStyle} from 'react-native';
 import WebView from 'react-native-webview';
 import {
@@ -119,6 +119,15 @@ export function CoinflowWebView(
     });
   }, [props]);
 
+  const currentUrlRef = useRef(url);
+  useEffect(() => {
+    currentUrlRef.current = url;
+  }, [url]);
+
+  const trackUrl = useCallback((next: string | undefined) => {
+    if (next) currentUrlRef.current = next;
+  }, []);
+
   const sendMessage = useCallback(
     (message: string) => {
       if (!WebViewRef?.current) throw new Error('WebViewRef not defined');
@@ -165,7 +174,16 @@ export function CoinflowWebView(
 
   const handleMessage = useCallback(
     (event: WebViewMessageEvent) => {
-      const {data} = event.nativeEvent;
+      const {data, url: eventUrl} = event.nativeEvent;
+
+      if (
+        !CoinflowUtils.isCoinflowMessageOrigin({
+          url: eventUrl,
+          fallbackUrl: currentUrlRef.current,
+          env: props.env,
+        })
+      )
+        return;
 
       if (typeof data === 'string') {
         try {
@@ -226,6 +244,7 @@ export function CoinflowWebView(
     [
       onLoad,
       props.waitForWebviewLoadedMessage,
+      props.env,
       handleBrowserRedirect,
       venmoFlow,
       handleIframeMessages,
@@ -268,6 +287,8 @@ export function CoinflowWebView(
           }
           ref={WebViewRef}
           source={{uri: url}}
+          onLoadStart={e => trackUrl(e.nativeEvent.url)}
+          onNavigationStateChange={s => trackUrl(s.url)}
           onMessage={handleMessage}
           onError={handleError}
           onLoad={handleLoad}
@@ -284,5 +305,6 @@ export function CoinflowWebView(
     onShouldStartLoadWithRequestOverride,
     props.route,
     style,
+    trackUrl,
   ]);
 }
