@@ -12,6 +12,7 @@ import WebView from 'react-native-webview';
 import {WebViewMessageEvent} from 'react-native-webview/lib/WebViewTypes';
 import LZString from 'lz-string';
 import {
+  CardType,
   CoinflowEnvs,
   CoinflowUtils,
   INLINE_SKELETON_HEIGHT_PX,
@@ -40,6 +41,9 @@ export interface CardFormTokenResponse {
   token: string;
   expMonth?: string;
   expYear?: string;
+  bin?: string;
+  lastFour?: string;
+  cardType?: CardType;
 }
 
 export interface CardFormNativeRef {
